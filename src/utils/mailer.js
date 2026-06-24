@@ -1,31 +1,30 @@
-const nodemailer = require('nodemailer');
 const { buildReminderEmailHtml } = require('./messageTemplates');
 require('dotenv').config();
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  requireTLS: true,
-  family: 4,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-
 async function sendEmail(to, subject, html) {
-  await transporter.sendMail({
-    from: `"Mervat Horse Riding Academy" <${process.env.EMAIL_USER}>`,
-    to,
-    subject,
-    html
+  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'api-key': process.env.BREVO_API_KEY,
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      sender: { name: 'Mervat Horse Riding Academy', email: process.env.EMAIL_USER },
+      to: [{ email: to }],
+      subject,
+      htmlContent: html
+    })
   });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Brevo API error (${response.status}): ${errorText}`);
+  }
 }
 
 async function sendReminderEmail(booking) {
   const html = buildReminderEmailHtml(booking);
-  // ⚠️ TESTING MODE: sends to ADMIN_TEST_EMAIL. Remove the "||" fallback later to use booking.email for real customers.
   const recipient = process.env.ADMIN_TEST_EMAIL || booking.email;
   await sendEmail(recipient, '🐴 Reminder: Your booking is tomorrow!', html);
 }
