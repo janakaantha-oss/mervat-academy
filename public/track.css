@@ -1,0 +1,119 @@
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'Poppins',sans-serif;
+  background: linear-gradient(135deg, #1a0a00, #3d1f00);
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+}
+.track-container { width:100%; max-width:480px; }
+.track-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #c8a96e;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+.track-brand .horse-badge { width: 38px; height: 38px; }
+.track-brand .running-horse { font-size: 1.2rem; }
+
+.track-card {
+  background:#fdf8f3;
+  border-radius:22px;
+  padding:40px 30px;
+  border: 1px solid rgba(200,169,110,0.25);
+  box-shadow:0 15px 40px rgba(0,0,0,0.25);
+  text-align:center;
+}
+.track-card h2 { font-family:'Playfair Display',serif; color:#2c1a0e; margin-bottom:6px; font-size:1.5rem; }
+.package-name { color:#a07840; font-weight:600; margin-bottom:16px; font-size:0.9rem; }
+.loading-text, .error-text { color:#888; padding:20px 0; }
+
+.status-banner { padding:10px 16px; border-radius:10px; font-size:0.85rem; font-weight:600; margin-bottom:20px; }
+.pending-banner { background:#fff3cd; color:#8a6d00; }
+.approved-banner { background:#d4edda; color:#1e7e34; }
+.rejected-banner { background:#f8d7da; color:#a71d2a; }
+
+.progress-stats { display:flex; justify-content:space-around; margin-bottom:16px; }
+.progress-stat { display:flex; flex-direction:column; }
+.progress-num { font-family:'Playfair Display',serif; font-size:1.8rem; color:#c8a96e; font-weight:700; }
+.progress-label { font-size:0.75rem; color:#888; }
+
+.progress-bar-track { background:#e8e0d5; border-radius:10px; height:10px; overflow:hidden; margin-bottom:20px; }
+.progress-bar-fill { background:linear-gradient(135deg,#c8a96e,#a07840); height:100%; transition:width 0.5s ease; }
+
+.package-detail-line { font-size:0.8rem; color:#666; margin-bottom:6px; }
+.booking-note { margin-top:20px; font-size:0.8rem; color:#a07840; background:#fef3e2; padding:12px; border-radius:10px; }
+.track-card { margin-bottom: 16px; border-radius: 18px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); border: 1px solid rgba(200,169,110,0.2); }
+.track-card h3 { font-family: 'Playfair Display', serif; color: #2c1a0e; margin-bottom: 16px; font-size: 1.1rem; text-align: center; }
+
+.booking-row { display: flex; gap: 12px; margin-bottom: 12px; }
+.booking-field { flex: 1; display: flex; flex-direction: column; text-align: left; }
+.booking-field label { font-size: 0.8rem; font-weight: 600; color: #2c1a0e; margin-bottom: 6px; }
+.booking-field input, .booking-field select {
+  padding: 10px 14px; border: 1.5px solid #e8e0d5; border-radius: 8px; font-family: 'Poppins', sans-serif;
+}
+
+.btn-book-session {
+  width: 100%; padding: 13px; background: linear-gradient(135deg,#c8a96e,#a07840);
+  color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 6px;
+}
+
+.track-status { font-size: 0.82rem; margin: 8px 0; text-align: left; }
+.track-status.error { color: #c0392b; font-weight: 600; }
+.track-status.success { color: #2e7d32; font-weight: 600; }
+
+.session-item {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #fdf8f3; padding: 10px 14px; border-radius: 10px; margin-bottom: 8px; font-size: 0.85rem; text-align: left;
+}
+.no-sessions-text { color: #aaa; text-align: center; padding: 10px 0; font-size: 0.85rem; }
+@media (max-width: 380px) {
+  .booking-row { flex-direction: column; }
+}
+.session-item { flex-wrap: wrap; gap: 8px; }
+.btn-cancel-session {
+  background: #fdecea; color: #c0392b; border: none; padding: 5px 12px;
+  border-radius: 8px; font-size: 0.75rem; font-weight: 600; cursor: pointer;
+}
+.cancel-status-badge { font-size: 0.72rem; padding: 3px 9px; border-radius: 8px; font-weight: 600; }
+.cancel-pending { background: #fff3cd; color: #8a6d00; }
+.cancel-approved { background: #f8d7da; color: #a71d2a; }
+.cancel-rejected { background: #d4edda; color: #1e7e34; }
+
+.refund-note { font-size: 0.8rem; color: #888; margin-bottom: 12px; text-align: center; }
+.btn-refund-request {
+  width: 100%; padding: 12px; background: #fdecea; color: #c0392b;
+  border: 1px solid #f5c6cb; border-radius: 10px; font-weight: 600; cursor: pointer;
+}
+.btn-refund-request:disabled { opacity: 0.6; cursor: not-allowed; }
+.horse-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(200,169,110,0.45), rgba(200,169,110,0.1));
+  border: 2px solid rgba(200,169,110,0.6);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.running-horse {
+  display: inline-block;
+  animation: gallop 0.5s ease-in-out infinite;
+}
+@keyframes gallop {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  25%      { transform: translateY(-3px) rotate(-10deg) scale(1.05); }
+  50%      { transform: translateY(0) rotate(0deg) scale(1); }
+  75%      { transform: translateY(1px) rotate(8deg) scale(0.95); }
+}
+.session-status { font-size: 0.72rem; font-weight: 600; padding: 3px 9px; border-radius: 8px; }
+.session-status.pending { background: #fff3cd; color: #8a6d00; }
+.session-status.approved { background: #d4edda; color: #1e7e34; }
+.session-status.declined { background: #f8d7da; color: #a71d2a; }
+.session-status.completed { background: #e0c89a; color: #5c3d1a; }

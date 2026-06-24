@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Package - Mervat Academy</title>
+  <link rel="stylesheet" href="track.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+  <div class="track-container">
+    <div class="track-brand">
+      <span class="horse-badge"><span class="running-horse">🐎</span></span>
+      Mervat Academy
+    </div>
+    <div class="track-card" id="trackCard">
+      <p class="loading-text" id="loadingText">Loading your package...</p>
+    </div>
+
+    <div class="track-card" id="bookingCard" style="display:none;">
+      <h3>📅 Book Your Next Session</h3>
+      <div class="booking-row">
+        <div class="booking-field">
+          <label>Date</label>
+          <input type="date" id="sessionDate">
+        </div>
+        <div class="booking-field">
+          <label id="sessionTimeLabel">Time</label>
+          <select id="sessionTime" disabled>
+            <option value="">-- Choose Date First --</option>
+          </select>
+        </div>
+      </div>
+      <p class="track-status" id="bookingStatus"></p>
+      <button class="btn-book-session" onclick="bookSession()">Book This Session</button>
+    </div>
+
+    <div class="track-card" id="sessionsCard" style="display:none;">
+      <h3>📋 Your Sessions</h3>
+      <div id="sessionsList"></div>
+    </div>
+
+    <div class="track-card" id="refundCard" style="display:none;">
+      <p class="refund-note" id="refundNote"></p>
+      <button class="btn-refund-request" id="refundButton" onclick="requestRefund()">Cancel My Package / Request Refund</button>
+    </div>
+  </div>
+  <script src="track.js"></script>
+</body>
+</html>

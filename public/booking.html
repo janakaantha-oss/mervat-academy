@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book a Session - Mervat Academy</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">
+      <span class="horse-badge"><span class="running-horse">🐎</span></span>
+      Mervat Academy
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="index.html#services">Services</a></li>
+      <li><a href="booking.html">Book Now</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">&#9776;</div>
+  </nav>
+
+  <section class="package-page-hero">
+    <video class="package-page-hero-video" autoplay muted loop playsinline>
+      <source src="assets/hero-video.mp4" type="video/mp4">
+    </video>
+    <div class="package-page-hero-overlay"></div>
+    <div class="package-page-hero-content">
+      <span class="hero-eyebrow">Reserve Your Spot</span>
+      <h1>Book a Session</h1>
+      <p>Choose your service below and we'll take care of the rest.</p>
+    </div>
+  </section>
+
+  <section class="booking" id="booking">
+    <div class="container">
+      <form class="booking-form" id="bookingForm" novalidate>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <div style="display:flex; gap:8px;">
+              <select id="title" style="max-width:90px;">
+                <option value="">-</option>
+                <option value="Mr">Mr</option>
+                <option value="Mrs">Mrs</option>
+                <option value="Ms">Ms</option>
+              </select>
+              <input type="text" id="name" placeholder="Your full name" required style="flex:1;"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="email" placeholder="your@email.com" required/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" id="phone" placeholder="+971 XX XXX XXXX" required/>
+          </div>
+          <div class="form-group" id="dateFieldGroup">
+            <label>Preferred Date *</label>
+            <input type="date" id="date" required/>
+          </div>
+        </div>
+
+       <div class="form-row">
+            <div class="form-group">
+              <label>Select Service *</label>
+              <select id="category" required onchange="showSubPackage()">
+                <option value="">-- Choose a Service --</option>
+                <option value="Riding Packages">🏇 Equestrian Training Programs</option>
+                <option value="Livery Horse">🏠 Premium Horse Boarding</option>
+                <option value="Horse Selling">💎 Quality Horses for Sale</option>
+                <option value="Horse Training">🐴 Horse Training &amp; Development</option>
+                <option value="Party Renting">🎉 Horse Rental for Events &amp; Occasions</option>
+                <option value="Equipment for Sale">🛍️ Equestrian Equipment &amp; Tack Shop</option>
+              </select>
+            </div>
+            <div class="form-group" id="subPackageGroup" style="display:none;">
+              <label>Select Package Type *</label>
+              <select id="packageType" onchange="updatePackageTiers()">
+                <option value="">-- Choose Package Type --</option>
+                <option value="Private Lessons for Horse Owners">Private Lessons for Horse Owners</option>
+                <option value="Private Lessons for Non-Horse Owners">Private Lessons for Non-Horse Owners</option>
+                <option value="Group Riding Package">Group Riding Package</option>
+                <option value="Family Riding Package">Family Riding Package</option>
+                <option value="Special Needs Riding Program">Special Needs Riding Program</option>
+                <option value="Mixed Package (Private & Group Lessons)">Mixed Package (Private &amp; Group Lessons)</option>
+                <option value="Hand Ride Experience">Hand Ride Experience</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row" id="packageTierRow" style="display:none;">
+            <div class="form-group">
+              <label>Select Package Tier *</label>
+              <select id="packageTier" onchange="updatePackageInfo()">
+                <option value="">-- Choose Tier --</option>
+              </select>
+            </div>
+            <div class="form-group" id="packageInfoBox" style="display:none;">
+              <label>Package Details</label>
+              <div class="package-info-card">
+                <p>💰 <strong>Price:</strong> <span id="packagePrice">-</span></p>
+                <p>📅 <strong>Validity:</strong> <span id="packageValidity">-</span></p>
+                <p>🧊 <strong>Freeze Policy:</strong> <span id="packageFreeze">-</span></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row" id="paymentMethodRow" style="display:none;">
+            <div class="form-group">
+              <label>Payment Method *</label>
+              <select id="paymentMethod">
+                <option value="">-- Choose Payment Method --</option>
+                <option value="Cash">💵 Cash</option>
+                <option value="Card">💳 Card</option>
+              </select>
+            </div>
+          </div>
+
+        <div class="form-row" id="schedulingRow">
+          <div class="form-group">
+            <label>Session Duration *</label>
+            <select id="duration" required>
+              <option value="">-- Choose Duration --</option>
+              <option value="1">1 Hour</option>
+              <option value="2">2 Hours</option>
+              <option value="4">4 Hours</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Start Time * (6:00 AM – 5:00 PM)</label>
+            <select id="startTime" required disabled>
+              <option value="">-- Choose Duration First --</option>
+            </select>
+            <p class="time-status" id="timeStatus"></p>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Message / Special Request</label>
+          <textarea id="message" rows="4" placeholder="Any special requests or questions..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">
+          <i class="fas fa-paper-plane"></i> Confirm Booking
+        </button>
+
+        <div class="form-success" id="formSuccess">
+          ✅ Your booking has been received! We will contact you shortly.
+        </div>
+
+        <div class="form-success package-success" id="packageSuccess" style="display:none;">
+          ✅ Your package request has been submitted for approval!<br>
+          📌 Save this link to track your sessions and book classes once approved:<br>
+          <a href="#" id="trackingLinkDisplay" target="_blank" style="word-break:break-all;"></a>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 Mervat Horse Riding Academy. All rights reserved. 🐴</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - Mervat Academy</title>
+  <link rel="stylesheet" href="admin.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <h2>🐴 Admin Login</h2>
+      <p>Enter password to view bookings</p>
+      <input type="password" id="passwordInput" placeholder="Password" />
+      <button onclick="checkPassword()">Login</button>
+      <p class="error-text" id="errorText">Wrong password, try again.</p>
+    </div>
+  </div>
+
+  <div class="dashboard" id="dashboard" style="display:none;">
+    <header class="admin-header">
+      <h1><span class="horse-badge" style="width:34px;height:34px;vertical-align:middle;margin-right:8px;"><span class="running-horse" style="font-size:1.1rem;">🐎</span></span>Mervat Academy — Admin</h1>
+      <div>
+        <button class="btn-refresh" onclick="loadBookings()">🔄 Refresh</button>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <div class="view-tabs">
+      <button class="tab-btn active" id="tabBookings" onclick="switchView('bookings')">📅 Bookings</button>
+      <button class="tab-btn" id="tabCustomers" onclick="switchView('customers')">👥 Customers</button>
+      <button class="tab-btn" id="tabReports" onclick="switchView('reports')">📊 Reports</button>
+      <button class="tab-btn" id="tabPackages" onclick="switchView('packages')">📦 Packages</button>
+    </div>
+
+    <!-- ===== BOOKINGS VIEW ===== -->
+    <div id="bookingsView">
+      <div id="cancelRequestBanner"></div>
+
+      <div class="stats-bar">
+        <div class="stat-box"><span class="stat-num" id="statTotal">0</span><span class="stat-label">Total Bookings</span></div>
+        <div class="stat-box"><span class="stat-num" id="statToday">0</span><span class="stat-label">Today's Bookings</span></div>
+        <div class="stat-box"><span class="stat-num" id="statPending">0</span><span class="stat-label">Pending</span></div>
+      </div>
+
+      <div class="calendar-section">
+        <div class="calendar-box">
+          <div class="calendar-nav">
+            <button onclick="changeMonth(-1)">‹</button>
+            <span id="calendarMonthLabel"></span>
+            <button onclick="changeMonth(1)">›</button>
+          </div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+
+        <div class="daily-box">
+          <h3 id="dailyDateLabel">Today</h3>
+          <div class="day-controls" id="dayControls"></div>
+          <div id="dailyBookingsContainer"></div>
+        </div>
+      </div>
+
+      <h3 class="table-title">All Bookings</h3>
+      <div class="filter-bar">
+        <input type="text" id="searchInput" placeholder="Search name, email, phone..." oninput="renderTable()">
+        <select id="categoryFilter" onchange="renderTable()">
+          <option value="">All Services</option>
+          <option value="Riding Packages">Riding Packages</option>
+          <option value="Livery Horse">Livery Horse</option>
+          <option value="Horse Selling">Horse Selling</option>
+          <option value="Horse Training">Horse Training</option>
+          <option value="Party Renting">Party Renting</option>
+          <option value="Equipment for Sale">Equipment for Sale</option>
+        </select>
+        <select id="statusFilter" onchange="renderTable()">
+          <option value="">All Status</option>
+          <option value="Pending">Pending</option>
+          <option value="Confirmed">Confirmed</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+        <span class="count-text" id="countText"></span>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="bookingsTable">
+          <thead>
+            <tr>
+              <th>Name</th><th>Email</th><th>Phone</th><th>Service</th><th>Package</th>
+              <th>Date</th><th>Time</th><th>Price</th><th>Payment</th><th>Status</th><th>Submitted</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsBody"></tbody>
+        </table>
+        <p id="emptyText" style="display:none;">No bookings yet.</p>
+      </div>
+    </div>
+
+    <!-- ===== CUSTOMERS VIEW ===== -->
+    <div id="customersView" style="display:none;">
+      <h3 class="table-title">All Customers (A–Z)</h3>
+      <div class="filter-bar">
+        <input type="text" id="customerSearch" placeholder="Search customers..." oninput="renderCustomers()">
+        <span class="count-text" id="customerCountText"></span>
+      </div>
+      <div class="table-wrapper">
+        <table id="customersTable">
+          <thead>
+            <tr>
+              <th>Name</th><th>Email</th><th>Phone</th><th>Total Bookings</th>
+              <th>Services Used</th><th>Customer Since</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="customersBody"></tbody>
+        </table>
+        <p id="customersEmptyText" style="display:none;">No customers yet.</p>
+      </div>
+    </div>
+
+    <!-- ===== REPORTS VIEW ===== -->
+    <div id="reportsView" style="display:none;">
+      <div class="report-section">
+        <h3>📅 Daily Report</h3>
+        <div class="filter-bar">
+          <input type="date" id="dailyReportDate">
+          <button class="btn-generate" onclick="generateDailyReport()">Generate</button>
+        </div>
+        <div id="dailyReportResult"></div>
+      </div>
+
+      <div class="report-section">
+        <h3>📆 Monthly Report</h3>
+        <div class="filter-bar">
+          <input type="month" id="monthlyReportMonth">
+          <button class="btn-generate" onclick="generateMonthlyReport()">Generate</button>
+        </div>
+        <div id="monthlyReportResult"></div>
+      </div>
+
+      <div class="report-section">
+        <h3>👥 Customer Report (ranked by revenue)</h3>
+        <div id="customerReportResult"></div>
+      </div>
+    </div>
+
+    <!-- ===== PACKAGES VIEW ===== -->
+    <div id="packagesView" style="display:none;">
+      <h3 class="table-title">Package Requests</h3>
+      <div class="filter-bar">
+        <select id="packageStatusFilter" onchange="renderPackages()">
+          <option value="">All (Active)</option>
+          <option value="Pending">Pending Approval</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+        <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; color:#888;">
+          <input type="checkbox" id="showFinishedPackages" onchange="renderPackages()"> Show Finished
+        </label>
+        <span class="count-text" id="packageCountText"></span>
+      </div>
+      <div id="packagesContainer"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay" style="display:none;">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
