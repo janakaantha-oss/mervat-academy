@@ -135,7 +135,11 @@ router.patch('/:id', async (req, res) => {
       end.setMonth(end.getMonth() + 1);
       req.body.startDate = start;
       req.body.endDate = end;
-      req.body.dailyLog = Array.from({ length: 30 }, (_, i) => ({ dayNumber: i + 1, note: '' }));
+      req.body.dailyLog = Array.from({ length: 30 }, (_, i) => {
+        const d = new Date(start);
+        d.setDate(d.getDate() + i);
+        return { dayNumber: i + 1, date: d.toISOString().slice(0, 10), note: '' };
+      });
     }
 
     const booking = await LiveryBooking.findByIdAndUpdate(req.params.id, req.body, { new: true });

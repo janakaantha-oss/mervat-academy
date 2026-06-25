@@ -29,6 +29,15 @@
     </div>
   </div>
 
+  <div id="dayDetailOverlay" style="display:none; position:fixed; inset:0; background:rgba(26,10,0,0.55); align-items:center; justify-content:center; z-index:999; padding:20px;">
+    <div style="background:#fdf8f3; border-radius:18px; padding:28px 26px; max-width:380px; width:100%; position:relative; box-shadow:0 20px 50px rgba(0,0,0,0.3);">
+      <button onclick="closeDayDetail()" style="position:absolute; top:14px; right:16px; background:none; border:none; font-size:1.1rem; cursor:pointer; color:#888;">✕</button>
+      <h3 id="dayDetailDate" style="font-family:'Playfair Display',serif; color:#2c1a0e; margin-bottom:4px;"></h3>
+      <p id="dayDetailDayNum" style="color:#a07840; font-weight:600; font-size:0.85rem; margin-bottom:16px;"></p>
+      <p id="dayDetailNote" style="color:#444; line-height:1.7; font-size:0.95rem;"></p>
+    </div>
+  </div>
+
   <script>
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
@@ -86,13 +95,16 @@
 
       if (booking.approvalStatus === 'Approved' && booking.dailyLog && booking.dailyLog.length) {
         document.getElementById('logCard').style.display = 'block';
-        document.getElementById('dayLogGrid').innerHTML = booking.dailyLog.map(d => `
-          <div style="border:1px solid ${d.note ? '#9fd8ab' : '#eee'}; background:${d.note ? '#f4fbf5' : '#fafafa'}; border-radius:8px; padding:8px; font-size:0.78rem;">
-            <strong>Day ${d.dayNumber}</strong>
-            ${d.date ? `<div style="color:#999; font-size:0.7rem;">${d.date}</div>` : ''}
-            <div style="margin-top:4px; color:#555;">${d.note ? escapeHtml(d.note) : '<em style="color:#bbb;">No entry yet</em>'}</div>
-          </div>
-        `).join('');
+        window._dailyLog = booking.dailyLog; // cache for popup lookup
+        document.getElementById('dayLogGrid').innerHTML = booking.dailyLog.map(d => {
+          const dateLabel = d.date ? formatDayLabel(d.date) : `Day ${d.dayNumber}`;
+          return `
+          <div onclick="openDayDetail(${d.dayNumber})" style="cursor:pointer; border:1px solid ${d.note ? '#9fd8ab' : '#eee'}; background:${d.note ? '#f4fbf5' : '#fafafa'}; border-radius:8px; padding:10px 6px; font-size:0.78rem; text-align:center; transition: box-shadow 0.2s;">
+            <strong style="display:block; color:#2c1a0e;">${dateLabel}</strong>
+            <span style="color:#999; font-size:0.68rem;">Day ${d.dayNumber}</span>
+            ${d.note ? '<div style="margin-top:3px; color:#1e7e34; font-size:0.68rem;">✓ Logged</div>' : '<div style="margin-top:3px; color:#bbb; font-size:0.68rem;">No entry</div>'}
+          </div>`;
+        }).join('');
       }
 
       if (booking.approvalStatus === 'Approved' && booking.daysRemaining !== null && booking.daysRemaining <= 7) {
@@ -115,6 +127,30 @@
       } catch (err) {
         alert('Could not submit renewal request. Please contact us directly.');
       }
+    }
+
+    function formatDayLabel(isoDate) {
+      const d = new Date(isoDate + 'T00:00:00');
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    function openDayDetail(dayNumber) {
+      const entry = (window._dailyLog || []).find(d => d.dayNumber === dayNumber);
+      if (!entry) return;
+
+      document.getElementById('dayDetailDate').textContent = entry.date
+        ? new Date(entry.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+        : `Day ${dayNumber}`;
+      document.getElementById('dayDetailDayNum').textContent = `Day ${dayNumber} of 30`;
+      document.getElementById('dayDetailNote').innerHTML = entry.note
+        ? escapeHtml(entry.note)
+        : '<em style="color:#bbb;">No care log entry has been added for this day yet.</em>';
+
+      document.getElementById('dayDetailOverlay').style.display = 'flex';
+    }
+
+    function closeDayDetail() {
+      document.getElementById('dayDetailOverlay').style.display = 'none';
     }
 
     function escapeHtml(text) {
