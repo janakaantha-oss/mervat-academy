@@ -26,6 +26,9 @@ app.use('/api/customers', customerRoutes);
 const packageRoutes = require('./src/routes/packages');
 app.use('/api/packages', packageRoutes);
 
+const liveryRoutes = require('./src/routes/livery');
+app.use('/api/livery', liveryRoutes);
+
 // Connect to Database
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ Database connected!'))
