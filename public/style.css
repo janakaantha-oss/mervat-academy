@@ -118,7 +118,7 @@ body {
 
 /* ======= HERO ======= */
 .hero {
-  min-height: 78vh;
+  min-height: 56vh;
   background: linear-gradient(135deg, #1a0a00 0%, #3d1f00 50%, #1a0a00 100%);
   display: flex;
   align-items: center;
@@ -387,7 +387,7 @@ body {
 /* ======= SERVICES ======= */
 .services {
   position: relative;
-  padding: 100px 0 110px;
+  padding: 56px 0 60px;
   overflow: hidden;
   text-align: center;
   background: #fdf8f3;
@@ -410,7 +410,7 @@ body {
   text-align: center;
   color: #6b5847;
   max-width: 580px;
-  margin: -6px auto 56px;
+  margin: -6px auto 36px;
   font-size: 1.05rem;
   line-height: 1.6;
 }
@@ -418,12 +418,12 @@ body {
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  gap: 22px;
 }
 
 .service-card {
   background: white;
-  padding: 40px 32px;
+  padding: 28px 24px;
   text-align: left;
   border: 1px solid #ece3d4;
   border-radius: 14px;
