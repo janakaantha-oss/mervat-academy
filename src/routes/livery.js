@@ -167,6 +167,61 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
+// ===== Admin: mark payment as received =====
+router.post('/:id/mark-paid', async (req, res) => {
+  try {
+    const booking = await LiveryBooking.findByIdAndUpdate(req.params.id, { paymentStatus: 'Paid' }, { new: true });
+    if (!booking) return res.status(404).json({ message: 'Livery booking not found' });
+    res.json({ message: '✅ Marked as paid', booking });
+  } catch (err) {
+    res.status(500).json({ message: '❌ Error marking payment' });
+  }
+});
+
+// ===== Admin: renew livery for another month =====
+router.post('/:id/renew', async (req, res) => {
+  try {
+    const booking = await LiveryBooking.findById(req.params.id);
+    if (!booking) return res.status(404).json({ message: 'Livery booking not found' });
+    if (booking.approvalStatus !== 'Approved') {
+      return res.status(400).json({ message: '❌ Only an approved livery can be renewed.' });
+    }
+
+    // New period starts right where the old one ended (keeps things contiguous
+    // even if admin renews a few days early or late).
+    const newStart = new Date(booking.endDate);
+    const newEnd = new Date(newStart);
+    newEnd.setMonth(newEnd.getMonth() + 1);
+
+    const existingDayCount = booking.dailyLog.length;
+    const newDays = Array.from({ length: 30 }, (_, i) => {
+      const d = new Date(newStart);
+      d.setDate(d.getDate() + i);
+      return { dayNumber: existingDayCount + i + 1, date: d.toISOString().slice(0, 10), note: '' };
+    });
+
+    booking.startDate = newStart;
+    booking.endDate = newEnd;
+    booking.dailyLog = booking.dailyLog.concat(newDays);
+    booking.renewalCount += 1;
+    booking.renewalRequested = false;
+    booking.reminderSent = false;
+    booking.paymentStatus = 'Unpaid'; // each renewal cycle needs its own payment
+
+    await booking.save();
+    res.json({ message: '✅ Livery renewed for another month', booking });
+
+    notifyLivery(booking, {
+      statusBadge: { bg: '#d4edda', color: '#1e7e34', text: '🔁 Livery Renewed' },
+      bodyText: `Your <strong>Full Livery</strong> for <strong>${booking.horseName}</strong> has been renewed for another month, until <strong>${newEnd.toLocaleDateString()}</strong>.`,
+      statusLine: 'Your livery has been renewed for another month! 🔁',
+      ctaLabel: 'Track My Livery'
+    });
+  } catch (err) {
+    res.status(500).json({ message: '❌ Error renewing livery', error: err.message });
+  }
+});
+
 // ===== Admin: free up a slot (end booking, mark inactive) =====
 router.post('/:id/end', async (req, res) => {
   try {
@@ -190,11 +245,7 @@ router.patch('/:id/log/:dayNumber', async (req, res) => {
     if (!entry) return res.status(404).json({ message: 'Day not found in log' });
 
     entry.note = note;
-    if (booking.startDate) {
-      const entryDate = new Date(booking.startDate);
-      entryDate.setDate(entryDate.getDate() + (dayNum - 1));
-      entry.date = entryDate.toISOString().slice(0, 10);
-    }
+    // entry.date is already pre-set at approval/renewal time — no need to recalculate here.
 
     await booking.save();
     res.json({ message: '✅ Daily log updated', booking });

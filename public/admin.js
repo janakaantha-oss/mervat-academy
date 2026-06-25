@@ -1049,6 +1049,7 @@ function renderLiverySlots() {
           <div class="livery-slot-horse">🐴 ${escapeHtml(booking.horseName)}</div>
           ${booking.approvalStatus === 'Pending' ? '<div class="livery-slot-days">⏳ Pending approval</div>' : ''}
           ${remaining !== null ? `<div class="livery-slot-days">${remaining} day(s) left</div>` : ''}
+          ${booking.approvalStatus === 'Approved' ? `<div class="livery-slot-days" style="color:${booking.paymentStatus === 'Paid' ? '#1e7e34' : '#a71d2a'};">${booking.paymentStatus === 'Paid' ? '💰 Paid' : '⚠️ Unpaid'}</div>` : ''}
           ${booking.renewalRequested ? '<div class="livery-slot-days" style="color:#a07840;">🔁 Renewal requested</div>' : ''}
         </div>`;
     }
@@ -1067,6 +1068,10 @@ function openLiveryModal(id) {
     actionButtons += `<button class="btn-small btn-reject" onclick="rejectLivery('${booking._id}')">❌ Reject</button>`;
   }
   if (booking.approvalStatus === 'Approved') {
+    if (booking.paymentStatus === 'Unpaid') {
+      actionButtons += `<button class="btn-small btn-paid" onclick="markLiveryPaid('${booking._id}')">💰 Mark Paid</button>`;
+    }
+    actionButtons += `<button class="btn-small btn-approve" onclick="renewLivery('${booking._id}')">🔁 Renew for Another Month</button>`;
     actionButtons += `<button class="btn-small" style="background:#e8e0d5;color:#555;" onclick="endLivery('${booking._id}')">🔚 End &amp; Free Slot</button>`;
   }
 
@@ -1090,7 +1095,11 @@ function openLiveryModal(id) {
     <p class="sub-label">🐴 Horse: ${escapeHtml(booking.horseName)}</p>
     <p class="sub-label">📧 ${escapeHtml(booking.email)} • 📱 ${escapeHtml(booking.phone)}</p>
     <p class="sub-label">💰 AED ${booking.price} / month</p>
-    <p style="margin:10px 0;"><span class="approval-badge approval-${booking.approvalStatus.toLowerCase()}">${booking.approvalStatus}</span></p>
+    <p style="margin:10px 0;">
+      <span class="approval-badge approval-${booking.approvalStatus.toLowerCase()}">${booking.approvalStatus}</span>
+      ${booking.approvalStatus === 'Approved' ? `<span class="payment-badge payment-${booking.paymentStatus.toLowerCase()}">${booking.paymentStatus}</span>` : ''}
+      ${booking.renewalCount > 0 ? `<span class="approval-badge" style="background:#e8e0d5;color:#555;">Renewed ${booking.renewalCount}×</span>` : ''}
+    </p>
     ${booking.startDate ? `<p class="sub-label">📅 Started: ${new Date(booking.startDate).toLocaleDateString()}</p>` : ''}
     ${booking.endDate ? `<p class="sub-label">📅 Expires: ${new Date(booking.endDate).toLocaleDateString()}</p>` : ''}
     ${remaining !== null ? `<p class="sub-label"><strong>${remaining} day(s) remaining</strong></p>` : ''}
@@ -1120,6 +1129,33 @@ async function rejectLivery(id) {
   });
   closeModal();
   loadLivery();
+}
+
+async function markLiveryPaid(id) {
+  await fetch(`/api/livery/${id}/mark-paid`, { method: 'POST' });
+  const idx = allLiveryCache.findIndex(b => b._id === id);
+  if (idx !== -1) {
+    const res = await fetch('/api/livery');
+    allLiveryCache = await res.json();
+  }
+  openLiveryModal(id);
+  renderLiverySlots();
+}
+
+async function renewLivery(id) {
+  if (!confirm('Renew this livery for another month? This resets payment status to Unpaid and adds 30 more days to the care log.')) return;
+  try {
+    const res = await fetch(`/api/livery/${id}/renew`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok) {
+      alert(data.message || 'Could not renew livery.');
+      return;
+    }
+    await loadLivery();
+    openLiveryModal(id);
+  } catch (err) {
+    alert('Could not renew livery.');
+  }
 }
 
 async function endLivery(id) {

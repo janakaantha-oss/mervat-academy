@@ -21,11 +21,13 @@ const liveryBookingSchema = new mongoose.Schema({
   price:          { type: Number, default: 3000 }, // AED per month
 
   approvalStatus: { type: String, enum: ['Pending', 'Approved', 'Rejected'], default: 'Pending' },
+  paymentStatus:  { type: String, enum: ['Unpaid', 'Paid'], default: 'Unpaid' },
 
-  // Set once admin approves — defines the 1-month period
+  // Set once admin approves — defines the current 1-month period
   startDate:      { type: Date },
   endDate:        { type: Date }, // startDate + 1 month
 
+  renewalCount:     { type: Number, default: 0 }, // how many times this has been renewed
   renewalRequested: { type: Boolean, default: false },
   reminderSent:      { type: Boolean, default: false }, // 1-week-before-expiry reminder
 
