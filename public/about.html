@@ -3,17 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>About Coach Mervat - Mervat Academy</title>
+  <title>About Coach Mervat - Mervat Equestrian School</title>
   <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
 
   <nav class="navbar" id="navbar">
     <div class="nav-logo">
-      <span class="horse-badge"><span class="running-horse">🐎</span></span>
-      Mervat Academy
+      <img src="assets/logo.png" alt="Mervat Equestrian School">
     </div>
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
@@ -22,18 +21,24 @@
       <li><a href="booking.html">Book Now</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
+    <span class="nav-phone"><i class="fas fa-phone"></i></span>
     <div class="hamburger" id="hamburger">&#9776;</div>
   </nav>
 
-  <section class="package-page-hero">
-    <video class="package-page-hero-video" autoplay muted loop playsinline>
-      <source src="assets/hero-video.mp4" type="video/mp4">
-    </video>
-    <div class="package-page-hero-overlay"></div>
-    <div class="package-page-hero-content">
-      <span class="hero-eyebrow">About Us</span>
-      <h1>Meet Coach Mervat</h1>
-      <p>Fifteen years of dedication to the art and discipline of horsemanship.</p>
+  <section class="pkg-breadcrumb" style="background: var(--cream);">
+    <div class="container">
+      <div class="pkg-breadcrumb-row">
+        <a href="index.html">Home</a> <i class="fas fa-chevron-right" style="font-size:0.6rem;"></i>
+        <span class="current">About Us</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="background: var(--cream); padding: 30px 0;">
+    <div class="container" style="text-align:center;">
+      <span class="section-tag">About Us</span>
+      <h1 class="section-title" style="margin-bottom: 6px;">Meet Coach Mervat</h1>
+      <p class="services-intro">Fifteen years of dedication to the art and discipline of horsemanship.</p>
     </div>
   </section>
 
@@ -47,10 +52,10 @@
           </div>
         </div>
         <div class="about-text">
-          <span class="section-tag">Meet Your Coach</span>
+          <span class="section-tag" style="text-align:left;">Meet Your Coach</span>
           <h2>Coach Mervat</h2>
           <p class="highlight-text">
-            🏆 Certified Professional Horse Riding Coach with over 15 years of experience
+            <i class="fas fa-trophy"></i> Certified Professional Horse Riding Coach with over 15 years of experience
           </p>
           <p>
             Coach Mervat is a passionate and dedicated equestrian professional,
@@ -78,8 +83,23 @@
     </div>
   </section>
 
+  <a href="https://wa.me/971585953807" class="cta-banner" style="margin: 0 auto 60px;">
+    <i class="fab fa-whatsapp"></i>
+    <div>
+      <div class="cta-text-main">Book Now &amp; Inquire</div>
+      <div class="cta-text-sub">Contact us via WhatsApp</div>
+    </div>
+    <i class="fas fa-arrow-right cta-arrow"></i>
+  </a>
+
   <footer class="footer">
-    <p>© 2026 Mervat Horse Riding Academy. All rights reserved. 🐴</p>
+    <div class="footer-socials">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-snapchat"></i></a>
+      <a href="#"><i class="fab fa-tiktok"></i></a>
+      <a href="https://wa.me/971585953807"><i class="fab fa-whatsapp"></i></a>
+    </div>
+    <p>© 2026 All Rights Reserved<br>MERVAT EQUESTRIAN SCHOOL</p>
   </footer>
 
   <script src="script.js"></script>
