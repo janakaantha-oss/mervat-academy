@@ -169,7 +169,6 @@ h1, h2, h3, .serif-heading {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(100%) contrast(1.05);
 }
 
 .hero-image-wrap::after {
@@ -450,7 +449,6 @@ h1, h2, h3, .serif-heading {
 .pkg-hero-image img {
   width: 100%; height: 100%;
   object-fit: cover;
-  filter: grayscale(100%) contrast(1.05);
 }
 .pkg-hero-info { text-align: center; }
 .pkg-hero-info h1 {
