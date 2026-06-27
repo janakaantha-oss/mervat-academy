@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Equestrian Training Programs - Mervat Academy</title>
+  <title>Riding Lessons - Mervat Equestrian School</title>
   <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
@@ -13,7 +13,8 @@
   <nav class="navbar" id="navbar">
     <div class="nav-logo">
       <span class="horse-badge"><span class="running-horse">🐎</span></span>
-      Mervat Academy
+      <span class="nav-logo-name">Mervat</span>
+      <span class="nav-logo-tagline">Equestrian School</span>
     </div>
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
@@ -22,122 +23,81 @@
       <li><a href="booking.html">Book Now</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
+    <span class="nav-phone"><i class="fas fa-phone"></i></span>
     <div class="hamburger" id="hamburger">&#9776;</div>
   </nav>
 
-  <section class="package-page-hero">
-    <video class="package-page-hero-video" autoplay muted loop playsinline>
-      <source src="assets/hero-video.mp4" type="video/mp4">
-    </video>
-    <div class="package-page-hero-overlay"></div>
-    <div class="package-page-hero-content">
-      <span class="hero-eyebrow">Services</span>
-      <h1>Equestrian Training Programs</h1>
-      <p>We offer a variety of riding lesson packages designed to suit all levels, ages, and goals.</p>
+  <section class="pkg-breadcrumb" style="background: var(--cream);">
+    <div class="container">
+      <div class="pkg-breadcrumb-row">
+        <a href="index.html">Home</a> <i class="fas fa-chevron-right" style="font-size:0.6rem;"></i>
+        <span class="current">Riding Lessons</span>
+      </div>
     </div>
   </section>
 
-  <section class="packages-page-body">
+  <section style="background: var(--cream); padding: 20px 0 70px;">
     <div class="container">
-      <div class="packages-grid">
+      <span class="section-tag">Services</span>
+      <h2 class="section-title">Riding Lessons</h2>
+      <p class="services-intro">We offer a variety of riding lesson packages designed to suit all levels, ages, and goals.</p>
 
-        <div class="package-card-detail">
-          <div class="package-card-top">
-            <span class="package-number">1</span>
-            <h3>Private Lessons for<br/>Horse Owners</h3>
-          </div>
-          <div class="package-rows">
-            <div class="package-row"><span>10 Private Lessons</span><strong>AED 1,500</strong></div>
-          </div>
-          <p class="package-includes">🐴 Training with your own horse or a school horse<br/>🧑 Personalized one-on-one coaching</p>
-          <a href="booking.html?package=Private+Lessons+for+Horse+Owners" class="select-package-btn">Select This Package →</a>
+      <div class="cards-grid" style="grid-template-columns: repeat(3, 1fr);">
+
+        <div class="service-card">
+          <div class="service-card-header"><h3>Private Lessons (Horse Owner)</h3></div>
+          <p>10 Private Lessons — AED 1,500</p>
+          <a href="private-lessons-horse-owner.html" class="learn-more">View Details →</a>
         </div>
 
-        <div class="package-card-detail">
-          <div class="package-card-top">
-            <span class="package-number">2</span>
-            <h3>Private Lessons for<br/>Non-Horse Owners</h3>
-          </div>
-          <div class="package-rows">
-            <div class="package-row"><span>Single Lesson</span><strong>AED 200</strong></div>
-            <div class="package-row"><span>5 Lessons Package</span><strong>AED 1,400</strong></div>
-            <div class="package-row"><span>10 Lessons Package</span><strong>AED 2,700</strong></div>
-          </div>
-          <a href="booking.html?package=Private+Lessons+for+Non-Horse+Owners" class="select-package-btn">Select This Package →</a>
+        <div class="service-card">
+          <div class="service-card-header"><h3>Private Lessons (Non-Horse Owner)</h3></div>
+          <p>From AED 200 — Single, 5, or 10 lesson packages</p>
+          <a href="private-lessons-non-horse-owner.html" class="learn-more">View Details →</a>
         </div>
 
-        <div class="package-card-detail">
-          <div class="package-card-top">
-            <span class="package-number">3</span>
-            <h3>Group Riding Package</h3>
-          </div>
-          <div class="package-rows">
-            <div class="package-row"><span>Single Lesson</span><strong>AED 180</strong></div>
-            <div class="package-row"><span>5 Lessons Package</span><strong>AED 850</strong></div>
-            <div class="package-row"><span>10 Lessons Package</span><strong>AED 1,600</strong></div>
-          </div>
-          <a href="booking.html?package=Group+Riding+Package" class="select-package-btn">Select This Package →</a>
+        <div class="service-card">
+          <div class="service-card-header"><h3>Group Riding Package</h3></div>
+          <p>From AED 180 — Single, 5, or 10 lesson packages</p>
+          <a href="group-riding-package.html" class="learn-more">View Details →</a>
         </div>
 
-        <div class="package-card-detail">
-          <div class="package-card-top">
-            <span class="package-number">4</span>
-            <h3>Family Riding Package</h3>
-          </div>
-          <div class="package-rows">
-            <div class="package-row"><span>Single Lesson</span><strong>AED 180</strong></div>
-            <div class="package-row"><span>5 Lessons Package</span><strong>AED 850</strong></div>
-            <div class="package-row"><span>10 Lessons Package</span><strong>AED 1,600</strong></div>
-          </div>
-          <a href="booking.html?package=Family+Riding+Package" class="select-package-btn">Select This Package →</a>
+        <div class="service-card">
+          <div class="service-card-header"><h3>Family Riding Package</h3></div>
+          <p>From AED 180 — Single, 5, or 10 lesson packages</p>
+          <a href="family-riding-package.html" class="learn-more">View Details →</a>
         </div>
 
-        <div class="package-card-detail">
-          <div class="package-card-top">
-            <span class="package-number">5</span>
-            <h3>Special Needs<br/>Riding Program</h3>
-          </div>
-          <div class="package-rows">
-            <div class="package-row"><span>Lesson Duration</span><strong>20 Minutes</strong></div>
-            <div class="package-row"><span>Single Session</span><strong>AED 100</strong></div>
-            <div class="package-row"><span>5 Sessions Package</span><strong>AED 2,000</strong></div>
-          </div>
-          <p class="package-includes">A safe, supportive, and enjoyable riding experience tailored to individual needs.</p>
-          <a href="booking.html?package=Special+Needs+Riding+Program" class="select-package-btn">Select This Package →</a>
+        <div class="service-card">
+          <div class="service-card-header"><h3>Special Needs Riding Program</h3></div>
+          <p>From AED 100 — 20-minute adaptive sessions</p>
+          <a href="special-needs-riding-program.html" class="learn-more">View Details →</a>
         </div>
 
-        <div class="package-card-detail">
-          <div class="package-card-top">
-            <span class="package-number">6</span>
-            <h3>Mixed Package<br/>(Private &amp; Group Lessons)</h3>
-          </div>
-          <div class="package-rows">
-            <div class="package-row"><span>Package One: 5 Private + 5 Group</span><strong>AED 2,000</strong></div>
-            <div class="package-row"><span>Package Two: 10 Private + 10 Group</span><strong>AED 4,000</strong></div>
-          </div>
-          <a href="booking.html?package=Mixed+Package+%28Private+%26+Group+Lessons%29" class="select-package-btn">Select This Package →</a>
+        <div class="service-card">
+          <div class="service-card-header"><h3>Mixed Package</h3></div>
+          <p>From AED 2,000 — Private &amp; group lessons combined</p>
+          <a href="mixed-package.html" class="learn-more">View Details →</a>
         </div>
 
-      </div>
+        <div class="service-card">
+          <div class="service-card-header"><h3>Hand Ride Experience</h3></div>
+          <p>From AED 40 — Guided, handler-led sessions</p>
+          <a href="hand-ride-experience.html" class="learn-more">View Details →</a>
+        </div>
 
-      <div class="hand-ride-banner">
-        <div class="hand-ride-icon"><i class="fas fa-walking"></i></div>
-        <div class="hand-ride-text">
-          <h4>Hand Ride Experience</h4>
-          <p>A guided horse-riding experience suitable for children and beginners, led by a trained handler to ensure safety and comfort.</p>
-        </div>
-        <div class="hand-ride-tiers">
-          <div class="package-row"><span>20 Minutes</span><strong>AED 40</strong></div>
-          <div class="package-row"><span>40 Minutes</span><strong>AED 80</strong></div>
-          <div class="package-row"><span>60 Minutes (1 Hour)</span><strong>AED 120</strong></div>
-        </div>
-        <a href="booking.html?package=Hand+Ride+Experience" class="select-package-btn">Select →</a>
       </div>
     </div>
   </section>
 
   <footer class="footer">
-    <p>© 2026 Mervat Horse Riding Academy. All rights reserved. 🐴</p>
+    <div class="footer-socials">
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-snapchat"></i></a>
+      <a href="#"><i class="fab fa-tiktok"></i></a>
+      <a href="https://wa.me/971585953807"><i class="fab fa-whatsapp"></i></a>
+    </div>
+    <p>© 2026 All Rights Reserved<br>MERVAT EQUESTRIAN SCHOOL</p>
   </footer>
 
   <script src="script.js"></script>
