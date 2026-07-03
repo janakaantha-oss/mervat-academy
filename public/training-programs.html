@@ -1,101 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Riding Lessons - Mervat Equestrian School</title>
+  <title>Riding Lessons — Legacy Equestrian School</title>
   <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
 
   <nav class="navbar" id="navbar">
     <div class="nav-logo">
-      <img src="assets/logo.png" alt="Mervat Equestrian School">
+      <span class="nav-logo-name">Legacy</span>
+      <span class="nav-logo-sub">Ecole Equestre</span>
     </div>
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
+      <li><a href="#">Gallery</a></li>
       <li><a href="about.html">About</a></li>
-      <li><a href="index.html#services">Services</a></li>
-      <li><a href="booking.html">Book Now</a></li>
+      <li><a href="index.html#services" class="active">Services</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
-    <span class="nav-phone"><i class="fas fa-phone"></i></span>
-    <div class="hamburger" id="hamburger">&#9776;</div>
+    <div class="nav-right">
+      <span class="nav-lang"><i class="fas fa-globe"></i> FR</span>
+      <a href="booking.html" class="btn-book-now">Book Now</a>
+    </div>
+    <button class="hamburger" id="hamburger">&#9776;</button>
   </nav>
 
-  <section class="pkg-breadcrumb" style="background: var(--cream);">
+  <!-- Hero: horse galloping in desert dunes, warm golden tone -->
+  <section class="hero" style="margin-top:72px; height:55vh; min-height:340px;">
+    <img src="assets/hero-horse.png" alt="Riding Lessons">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Elevate Your Performance</p>
+      <h1>Riding Lessons</h1>
+    </div>
+  </section>
+
+  <!-- Riding Packages Grid -->
+  <section class="services" style="padding: 70px 0;">
     <div class="container">
-      <div class="pkg-breadcrumb-row">
-        <a href="index.html">Home</a> <i class="fas fa-chevron-right" style="font-size:0.6rem;"></i>
-        <span class="current">Riding Lessons</span>
+      <p class="section-eyebrow">Our Expertise</p>
+      <h2 class="section-heading">Our Riding Packages</h2>
+
+      <div class="services-grid">
+
+        <!-- Private Lessons -->
+        <div class="service-card">
+          <img class="service-card-img" src="https://images.pexels.com/photos/3723115/pexels-photo-3723115.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Private Lessons">
+          <div class="service-card-body">
+            <h3 class="service-card-title">Private Lessons</h3>
+            <div class="service-price-rows">
+              <div class="service-price-row"><span>1 session</span><strong>250 AED</strong></div>
+              <div class="service-price-row"><span>10 sessions</span><strong>2,500 AED</strong></div>
+            </div>
+            <a href="private-lessons-non-horse-owner.html" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
+        <!-- Group Lessons -->
+        <div class="service-card">
+          <img class="service-card-img" src="https://images.pexels.com/photos/7134932/pexels-photo-7134932.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Group Lessons">
+          <div class="service-card-body">
+            <h3 class="service-card-title">Group Lessons</h3>
+            <div class="service-price-rows">
+              <div class="service-price-row"><span>1 session</span><strong>170 AED</strong></div>
+              <div class="service-price-row"><span>10 sessions</span><strong>1,700 AED</strong></div>
+            </div>
+            <a href="group-riding-package.html" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
+        <!-- Outdoor Lessons -->
+        <div class="service-card">
+          <img class="service-card-img" src="https://images.pexels.com/photos/13340057/pexels-photo-13340057.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Outdoor Lessons">
+          <div class="service-card-body">
+            <h3 class="service-card-title">Outdoor Lessons</h3>
+            <div class="service-price-rows">
+              <div class="service-price-row"><span>1 private session</span><strong>200 AED</strong></div>
+              <div class="service-price-row"><span>1 group session</span><strong>100 AED</strong></div>
+            </div>
+            <a href="desert-beach-riding.html" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
+        <!-- Jumping Lessons -->
+        <div class="service-card">
+          <img class="service-card-img" src="https://images.pexels.com/photos/11370545/pexels-photo-11370545.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Jumping Lessons">
+          <div class="service-card-body">
+            <h3 class="service-card-title">Jumping Lessons</h3>
+            <div class="service-price-rows">
+              <div class="service-price-row"><span>1 session</span><strong>300 AED</strong></div>
+              <div class="service-price-row"><span>10 sessions</span><strong>3000 AED</strong></div>
+            </div>
+            <a href="booking.html?service=Jumping+Lessons" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
+        <!-- Special Needs Lessons -->
+        <div class="service-card">
+          <img class="service-card-img" src="https://images.pexels.com/photos/7882859/pexels-photo-7882859.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Special Needs Lessons">
+          <div class="service-card-body">
+            <h3 class="service-card-title">Special Needs Lessons</h3>
+            <div class="service-price-rows">
+              <div class="service-price-row"><span>1 session</span><strong>100 AED</strong></div>
+              <div class="service-price-row"><span>10 sessions</span><strong>400 AED</strong></div>
+            </div>
+            <a href="special-needs-riding-program.html" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
+        <!-- Hand Ride -->
+        <div class="service-card">
+          <img class="service-card-img" src="https://images.pexels.com/photos/5216116/pexels-photo-5216116.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Hand Ride">
+          <div class="service-card-body">
+            <h3 class="service-card-title">Hand Ride</h3>
+            <div class="service-price-rows">
+              <div class="service-price-row"><span>1 session</span><strong>50 AED</strong></div>
+            </div>
+            <a href="hand-ride-experience.html" class="btn-book">Book Now</a>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
 
-  <section style="background: var(--cream); padding: 20px 0 70px;">
-    <div class="container">
-      <span class="section-tag">Services</span>
-      <h2 class="section-title">Riding Lessons</h2>
-      <p class="services-intro">We offer a variety of riding lesson packages designed to suit all levels, ages, and goals.</p>
-
-      <div class="cards-grid" style="grid-template-columns: repeat(3, 1fr);">
-
-        <div class="service-card">
-          <div class="service-card-header"><h3>Private Lessons (Horse Owner)</h3></div>
-          <p>10 Private Lessons — AED 1,500</p>
-          <a href="private-lessons-horse-owner.html" class="learn-more">View Details →</a>
-        </div>
-
-        <div class="service-card">
-          <div class="service-card-header"><h3>Private Lessons (Non-Horse Owner)</h3></div>
-          <p>From AED 200 — Single, 5, or 10 lesson packages</p>
-          <a href="private-lessons-non-horse-owner.html" class="learn-more">View Details →</a>
-        </div>
-
-        <div class="service-card">
-          <div class="service-card-header"><h3>Group Riding Package</h3></div>
-          <p>From AED 180 — Single, 5, or 10 lesson packages</p>
-          <a href="group-riding-package.html" class="learn-more">View Details →</a>
-        </div>
-
-        <div class="service-card">
-          <div class="service-card-header"><h3>Family Riding Package</h3></div>
-          <p>From AED 180 — Single, 5, or 10 lesson packages</p>
-          <a href="family-riding-package.html" class="learn-more">View Details →</a>
-        </div>
-
-        <div class="service-card">
-          <div class="service-card-header"><h3>Special Needs Riding Program</h3></div>
-          <p>From AED 100 — 20-minute adaptive sessions</p>
-          <a href="special-needs-riding-program.html" class="learn-more">View Details →</a>
-        </div>
-
-        <div class="service-card">
-          <div class="service-card-header"><h3>Mixed Package</h3></div>
-          <p>From AED 2,000 — Private &amp; group lessons combined</p>
-          <a href="mixed-package.html" class="learn-more">View Details →</a>
-        </div>
-
-        <div class="service-card">
-          <div class="service-card-header"><h3>Hand Ride Experience</h3></div>
-          <p>From AED 40 — Guided, handler-led sessions</p>
-          <a href="hand-ride-experience.html" class="learn-more">View Details →</a>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
+  <!-- Footer -->
   <footer class="footer">
-    <div class="footer-socials">
-      <a href="#"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-snapchat"></i></a>
-      <a href="#"><i class="fab fa-tiktok"></i></a>
-      <a href="https://wa.me/971585953807"><i class="fab fa-whatsapp"></i></a>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-socials">
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <div class="footer-contact">
+          <p class="footer-contact-label">Contact</p>
+          <p>+971 XX XXX XXXX</p>
+          <p>hello@coachmervat.com</p>
+          <p>Dubai, UAE</p>
+        </div>
+      </div>
+      <div class="footer-divider"></div>
+      <div class="footer-bottom">
+        <span>© 2026 Legacy. All rights reserved.</span>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+        </div>
+      </div>
     </div>
-    <p>© 2026 All Rights Reserved<br>MERVAT EQUESTRIAN SCHOOL</p>
   </footer>
 
   <script src="script.js"></script>

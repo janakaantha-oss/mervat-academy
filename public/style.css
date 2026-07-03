@@ -325,8 +325,25 @@ h1, h2, h3, .serif {
 }
 .service-explore:hover { color: var(--brown); }
 
-@media (max-width: 900px) { .services-grid { grid-template-columns: 1fr 1fr; } }
-@media (max-width: 600px) { .services-grid { grid-template-columns: 1fr; } }
+.service-card .btn-book {
+  display: block;
+  width: 100%;
+  background: var(--btn-bg);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 14px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 16px;
+}
+.service-card .btn-book:hover { opacity: 0.85; }
+
+
 
 /* ======= PACKAGE DETAIL PAGE ======= */
 
