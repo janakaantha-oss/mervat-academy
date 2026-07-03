@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Private Lessons — Coach Mervat Equestrian School</title>
+  <title>Private Lessons — Legacy Equestrian School</title>
   <link rel="stylesheet" href="style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -12,7 +12,8 @@
 
   <nav class="navbar" id="navbar">
     <div class="nav-logo">
-      <img src="assets/logo.png" alt="Coach Mervat Equestrian School">
+      <span class="nav-logo-name">Legacy</span>
+      <span class="nav-logo-sub">Ecole Equestre</span>
     </div>
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">Home</a></li>
@@ -22,15 +23,15 @@
       <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="nav-right">
-      <span class="nav-lang"><i class="fas fa-globe"></i> EN</span>
+      <span class="nav-lang"><i class="fas fa-globe"></i> FR</span>
       <a href="booking.html" class="btn-book-now">Book Now</a>
     </div>
     <button class="hamburger" id="hamburger">&#9776;</button>
   </nav>
 
-  <!-- Hero -->
-  <section class="hero" style="margin-top: 72px;">
-    <img src="https://images.unsplash.com/photo-1650397306200-bae62961143f?fm=jpg&q=85&w=1800&auto=format&fit=crop" alt="Private Lessons">
+  <!-- Hero: rider on white horse with instructor in desert arena -->
+  <section class="hero" style="margin-top:72px; height:55vh; min-height:340px;">
+    <img src="https://images.pexels.com/photos/3649169/pexels-photo-3649169.jpeg?auto=compress&cs=tinysrgb&w=1800" alt="Private Lessons">
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <p class="hero-breadcrumb">
@@ -42,51 +43,51 @@
     </div>
   </section>
 
-  <!-- Description -->
-  <section style="background: var(--white); padding: 80px 32px;">
-    <div style="max-width: 780px; margin: 0 auto; text-align: center;">
-      <p class="section-eyebrow" style="margin-bottom:16px;">About This Program</p>
-      <h2 style="font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:400; color:var(--brown); margin-bottom:26px; line-height:1.2;">Private Horse Riding Sessions</h2>
-      <p style="font-size:1.05rem; color:var(--brown-light); line-height:1.8; margin-bottom:22px;">
-        Experience the personal attention and focused progress that comes with one-on-one riding. Our private sessions are tailored entirely to you — your pace, your goals, and your level. Whether you are a first-time rider or looking to refine your technique, our expert instructors provide dedicated guidance in a calm and supportive environment.
-      </p>
-      <p class="pkg-duration" style="text-align:left;">Class Duration: <span>45 minutes</span></p>
-    </div>
-  </section>
-
-  <!-- Pricing -->
-  <section class="pkg-pricing">
+  <!-- Choose Your Package — white background -->
+  <section style="background: var(--white); padding: 70px 0;">
     <div class="container">
-      <h2>Choose Your Package</h2>
+      <h2 style="font-family:'Cormorant Garamond',serif; font-size:2.6rem; font-weight:400; color:var(--brown); text-align:center; margin-bottom:48px;">Choose Your Package</h2>
       <div class="pricing-grid">
 
         <div class="pricing-card">
           <p class="pricing-sessions">1 Session</p>
-          <p class="pricing-amount">200<span class="pricing-currency">AED</span></p>
+          <p class="pricing-amount">250<span class="pricing-currency">AED</span></p>
           <div class="pricing-divider"></div>
-          <a href="booking.html?service=Private+Lessons+Non-Horse+Owner&tier=Single" class="btn-book">Book Now</a>
+          <a href="booking.html?service=Private+Lessons&tier=Single" class="btn-book">Book Now</a>
         </div>
 
         <div class="pricing-card best-value">
           <span class="best-value-badge">Best Value</span>
           <p class="pricing-sessions">10 Sessions</p>
-          <p class="pricing-amount">2,700<span class="pricing-currency">AED</span></p>
+          <p class="pricing-amount">2,500<span class="pricing-currency">AED</span></p>
           <div class="pricing-divider"></div>
-          <a href="booking.html?service=Private+Lessons+Non-Horse+Owner&tier=10+Sessions" class="btn-book">Book Now</a>
+          <a href="booking.html?service=Private+Lessons&tier=10+Sessions" class="btn-book">Book Now</a>
         </div>
 
       </div>
     </div>
   </section>
 
-  <!-- Terms -->
-  <section class="pkg-terms">
+  <!-- About This Program — cream background -->
+  <section style="background: var(--cream); padding: 80px 32px;">
+    <div style="max-width: 780px; margin: 0 auto; text-align: center;">
+      <p class="section-eyebrow" style="margin-bottom:16px;">About This Program</p>
+      <h2 style="font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:400; color:var(--brown); margin-bottom:26px; line-height:1.2;">Private Horse Riding Sessions</h2>
+      <p style="font-size:1.02rem; color:var(--brown-light); line-height:1.8; margin-bottom:22px;">
+        Experience the personal attention and focused progress that comes with one-on-one riding. Our private sessions are tailored entirely to you — your pace, your goals, and your level. Whether you are a first-time rider or looking to refine your technique, our expert instructors provide dedicated guidance in a calm and supportive environment.
+      </p>
+      <p class="pkg-duration" style="text-align:left; max-width:780px; margin:0 auto;">Class Duration: <span>45 minutes</span></p>
+    </div>
+  </section>
+
+  <!-- Terms & Regulations — cream background -->
+  <section class="pkg-terms" style="background: var(--cream);">
     <div class="container" style="max-width: 780px;">
-      <h2>10 Lessons Package — Terms &amp; Regulations</h2>
+      <h2>Terms &amp; Regulations</h2>
       <ul class="terms-list">
         <li>Valid for 2 months from the date of purchase</li>
-        <li>Expires automatically after the validity period</li>
-        <li>Membership may be frozen for up to 2 weeks during the subscription period</li>
+        <li>Membership expires automatically after the validity period</li>
+        <li>Students may freeze their membership for up to 2 weeks during the subscription period</li>
         <li>Class may be rescheduled up to 24 hours before the scheduled booking time. Unfortunately, cancellations or rescheduling requests made less than 24 hours in advance will not be eligible for rescheduling, and the class will be deducted from your package.</li>
       </ul>
     </div>
@@ -103,14 +104,14 @@
         </div>
         <div class="footer-contact">
           <p class="footer-contact-label">Contact</p>
-          <p>+971 XX XXX XXXX</p>
+          <p>+212 555 123 456</p>
           <p>hello@coachmervat.com</p>
-          <p>Dubai, UAE</p>
+          <p>Desert Oasis, Route 42</p>
         </div>
       </div>
       <div class="footer-divider"></div>
       <div class="footer-bottom">
-        <span>© 2026 Coach Mervat. All rights reserved.</span>
+        <span>© 2024 Legacy. All rights reserved.</span>
         <div class="footer-bottom-links">
           <a href="#">Privacy Policy</a>
           <a href="#">Terms of Use</a>
