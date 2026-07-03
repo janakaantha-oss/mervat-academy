@@ -61,18 +61,20 @@ h1, h2, h3, .serif {
 }
 .nav-logo-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   text-transform: uppercase;
   color: var(--brown);
   line-height: 1;
+  font-style: normal;
 }
 .nav-logo-sub {
-  font-size: 0.58rem;
-  letter-spacing: 2.5px;
+  font-size: 0.52rem;
+  letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--brown-light);
+  margin-top: 2px;
 }
 
 /* Logo image variant */
@@ -174,7 +176,7 @@ h1, h2, h3, .serif {
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.38) 100%);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.32) 60%, rgba(0,0,0,0.48) 100%);
 }
 .hero-content {
   position: absolute;
