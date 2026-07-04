@@ -1,10 +1,11 @@
 const cron = require('node-cron');
 const Booking = require('../models/Booking');
 const LiveryBooking = require('../models/LiveryBooking');
+const PackagePurchase = require('../models/PackagePurchase');
 const { sendReminderEmail, sendEmail } = require('../utils/mailer');
 const { sendWhatsApp } = require('../utils/whatsapp');
 const { sendSMS } = require('../utils/sms');
-const { buildReminderWhatsAppText, buildLiveryStatusEmailHtml, buildLiveryStatusWhatsAppText } = require('../utils/messageTemplates');
+const { buildReminderWhatsAppText, buildLiveryStatusEmailHtml, buildLiveryStatusWhatsAppText, buildStatusUpdateEmailHtml, buildStatusUpdateWhatsAppText } = require('../utils/messageTemplates');
 require('dotenv').config();
 
 function parseBookingDateTime(dateStr, timeStr) {
@@ -81,7 +82,7 @@ function startReminderJob() {
 
           try {
             const emailRecipient = process.env.ADMIN_TEST_EMAIL || booking.email;
-            await sendEmail(emailRecipient, '🐴 Mervat Academy — Livery Renewal Reminder', buildLiveryStatusEmailHtml({
+            await sendEmail(emailRecipient, '🐴 Legacy Équestre — Livery Renewal Reminder', buildLiveryStatusEmailHtml({
               name: booking.name, horseName: booking.horseName,
               statusBadge: { bg: '#fff3cd', color: '#8a6d00', text: '⏳ Renewal Reminder' },
               bodyText, trackingUrl, ctaLabel: 'Renew My Livery'
@@ -119,6 +120,71 @@ function startReminderJob() {
   });
 
   console.log('⏰ Livery renewal reminder system is active (checks every 30 min)');
+
+  // ===== Package 2-month expiry + backfill (runs hourly, catches up after sleep) =====
+  cron.schedule('15 * * * *', async () => {
+    try {
+      const now = new Date();
+
+      // Backfill: approved packages missing an expiresAt get one (approvedAt or createdAt + 2 months)
+      const missing = await PackagePurchase.find({ approvalStatus: 'Approved', expiresAt: { $exists: false } });
+      for (const p of missing) {
+        const base = p.approvedAt || p.createdAt || now;
+        const exp = new Date(base);
+        exp.setMonth(exp.getMonth() + 2);
+        if (!p.approvedAt) p.approvedAt = base;
+        p.expiresAt = exp;
+        await p.save();
+        console.log(`🗓️  Backfilled expiry for package ${p._id} -> ${exp.toISOString().slice(0,10)}`);
+      }
+
+      // Expire: approved, not yet finished/expired, past expiresAt. Keep the record.
+      const toExpire = await PackagePurchase.find({
+        approvalStatus: 'Approved',
+        expired: { $ne: true },
+        finished: { $ne: true },
+        frozen: { $ne: true },
+        expiresAt: { $lt: now }
+      });
+
+      for (const pkg of toExpire) {
+        pkg.expired = true;
+        pkg.finished = true; // no more sessions can be booked; record is retained
+        await pkg.save();
+
+        const used = pkg.sessionsCompleted || 0;
+        const total = pkg.sessionsTotal || 0;
+        const forfeited = Math.max(0, total - used);
+        const bodyText = `Your <strong>${pkg.packageType} — ${pkg.tierLabel}</strong> package has reached the end of its 2-month validity and has now expired. ` +
+          `You completed <strong>${used} of ${total}</strong> session(s).` +
+          (forfeited > 0 ? ` ${forfeited} unused session(s) have expired and are non-refundable, as per our terms.` : '');
+
+        try {
+          const emailRecipient = process.env.ADMIN_TEST_EMAIL || pkg.email;
+          await sendEmail(emailRecipient, '🐴 Legacy Équestre — Your Package Has Expired', buildStatusUpdateEmailHtml({
+            name: pkg.name, title: pkg.title,
+            statusBadge: { bg: '#efe9db', color: '#6b6560', text: '⌛ Package Expired' },
+            bodyText, trackingUrl: null
+          }));
+        } catch (e) { console.log('⚠️ Expiry email error:', e.message); }
+
+        try {
+          const waRecipient = process.env.ADMIN_TEST_PHONE || `whatsapp:${pkg.phone}`;
+          await sendWhatsApp(waRecipient, buildStatusUpdateWhatsAppText({
+            name: pkg.name, title: pkg.title,
+            statusLine: 'Your package has expired ⌛',
+            bodyText: bodyText.replace(/<[^>]+>/g, '')
+          }));
+        } catch (e) { console.log('⚠️ Expiry WhatsApp error:', e.message); }
+
+        console.log(`⌛ Package ${pkg._id} expired (kept in records).`);
+      }
+    } catch (err) {
+      console.log('❌ Package expiry job error:', err);
+    }
+  });
+
+  console.log('⏰ Package expiry system is active (checks hourly)');
 }
 
 module.exports = { startReminderJob, parseBookingDateTime };

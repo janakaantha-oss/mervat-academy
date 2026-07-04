@@ -30,7 +30,7 @@ function notifyLivery(booking, { statusBadge, bodyText, statusLine, ctaLabel, in
   const trackingUrl = includeLink ? `${process.env.PUBLIC_BASE_URL || ''}/livery-track.html?token=${booking.token}` : null;
 
   const emailRecipient = process.env.ADMIN_TEST_EMAIL || booking.email;
-  sendEmail(emailRecipient, '🐴 Mervat Academy — Update on Your Livery', buildLiveryStatusEmailHtml({
+  sendEmail(emailRecipient, '🐴 Legacy Équestre — Update on Your Livery', buildLiveryStatusEmailHtml({
     name: booking.name, horseName: booking.horseName, statusBadge, bodyText, trackingUrl, ctaLabel
   })).catch(err => console.log('⚠️ Livery email notification error:', err.message));
 
@@ -66,7 +66,7 @@ router.post('/', async (req, res) => {
     const trackingUrl = `${process.env.PUBLIC_BASE_URL || ''}/livery-track.html?token=${booking.token}`;
 
     const emailRecipient = process.env.ADMIN_TEST_EMAIL || booking.email;
-    sendEmail(emailRecipient, '🐴 Your Mervat Academy Livery Request', buildLiveryRequestEmailHtml({
+    sendEmail(emailRecipient, '🐴 Your Legacy Équestre Livery Request', buildLiveryRequestEmailHtml({
       name: booking.name, horseName: booking.horseName, trackingUrl
     })).catch(err => console.log('⚠️ Livery email error (booking still saved):', err.message));
 

@@ -10,7 +10,7 @@ async function sendEmail(to, subject, html) {
       'content-type': 'application/json'
     },
     body: JSON.stringify({
-      sender: { name: 'Mervat Horse Riding Academy', email: process.env.EMAIL_USER },
+      sender: { name: 'Legacy Équestre', email: process.env.EMAIL_USER },
       to: [{ email: to }],
       subject,
       htmlContent: html

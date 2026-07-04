@@ -108,3 +108,24 @@ body {
 .session-status.completed { background:#dcd2bd; color:#5c4a2a; }
 
 @media (max-width:380px) { .booking-row { flex-direction:column; } }
+
+/* Collapsible Terms & Conditions */
+.terms-details {
+  margin-top:18px; text-align:left;
+  border-top:1px solid #e5ddcf; padding-top:14px;
+}
+.terms-details summary {
+  cursor:pointer; list-style:none;
+  font-size:0.78rem; font-weight:600; letter-spacing:0.5px; text-transform:uppercase;
+  color:#6b7a5a; display:flex; align-items:center; gap:6px;
+}
+.terms-details summary::-webkit-details-marker { display:none; }
+.terms-details summary::before { content:'📜'; }
+.terms-details summary::after { content:'▾'; margin-left:auto; transition:transform 0.2s; }
+.terms-details[open] summary::after { transform:rotate(180deg); }
+.terms-details .terms-list {
+  margin:12px 0 4px; padding-left:18px;
+}
+.terms-details .terms-list li {
+  font-size:0.8rem; color:#6b6560; line-height:1.6; margin-bottom:8px;
+}

@@ -25,7 +25,7 @@ function notifyPackage(pkg, { statusBadge, bodyText, detailsHtml, ctaLabel, stat
   const data = { name: pkg.name, title: pkg.title, statusBadge, bodyText, detailsHtml, trackingUrl, ctaLabel };
 
   const emailRecipient = process.env.ADMIN_TEST_EMAIL || pkg.email;
-  sendEmail(emailRecipient, `🐴 Mervat Academy — Update on Your Package`, buildStatusUpdateEmailHtml(data))
+  sendEmail(emailRecipient, `🐴 Legacy Équestre — Update on Your Package`, buildStatusUpdateEmailHtml(data))
     .catch(err => console.log('⚠️ Email notification error:', err.message));
 
   const waRecipient = process.env.ADMIN_TEST_PHONE || `whatsapp:${pkg.phone}`;
@@ -55,7 +55,7 @@ router.post('/', async (req, res) => {
 
     const emailHtml = buildPackageEmailHtml(templateData);
     const emailRecipient = process.env.ADMIN_TEST_EMAIL || pkg.email;
-    sendEmail(emailRecipient, '🐴 Your Mervat Academy Package Request', emailHtml)
+    sendEmail(emailRecipient, '🐴 Your Legacy Équestre Package Request', emailHtml)
       .catch(emailErr => console.log('⚠️ Email notification error (package still saved):', emailErr.message));
 
     const waText = buildPackageWhatsAppText(templateData);
@@ -99,6 +99,9 @@ router.post('/:id/book-session', async (req, res) => {
     }
     if (pkg.finished) {
       return res.status(403).json({ message: '❌ This package has been finished.' });
+    }
+    if (pkg.expired || (pkg.expiresAt && new Date() > new Date(pkg.expiresAt))) {
+      return res.status(403).json({ message: '❌ This package has expired. Unused sessions are no longer available.' });
     }
     const remaining = pkg.sessionsTotal - pkg.sessionsBooked;
     if (remaining <= 0) {
@@ -191,6 +194,15 @@ router.patch('/:id', async (req, res) => {
 
     // Package approved
     if (req.body.approvalStatus === 'Approved' && before.approvalStatus !== 'Approved') {
+      // Start the 2-month validity clock from approval
+      const now = new Date();
+      const exp = new Date(now);
+      exp.setMonth(exp.getMonth() + 2);
+      pkg.approvedAt = now;
+      pkg.expiresAt = exp;
+      pkg.expired = false;
+      await pkg.save();
+
       notifyPackage(pkg, {
         statusBadge: { bg: '#d4edda', color: '#1e7e34', text: '✅ Package Approved' },
         bodyText: `Great news! Your <strong>${pkg.packageType} — ${pkg.tierLabel}</strong> package has been approved. Please select your preferred dates and times for your sessions using the link below.`,

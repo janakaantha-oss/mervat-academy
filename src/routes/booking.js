@@ -231,7 +231,7 @@ router.patch('/:id/status', async (req, res) => {
         if (notifyData) {
           const trackingUrl = `${process.env.PUBLIC_BASE_URL || ''}/track.html?token=${pkg.token}`;
           const emailRecipient = process.env.ADMIN_TEST_EMAIL || pkg.email;
-          sendEmail(emailRecipient, '🐴 Mervat Academy — Update on Your Session', buildStatusUpdateEmailHtml({
+          sendEmail(emailRecipient, '🐴 Legacy Équestre — Update on Your Session', buildStatusUpdateEmailHtml({
             name: pkg.name, title: pkg.title, trackingUrl, ...notifyData
           })).catch(err => console.log('⚠️ Email notification error:', err.message));
 

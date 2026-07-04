@@ -76,9 +76,13 @@ function renderPackage() {
   if (pkg.approvalStatus === 'Pending') {
     approvalBadge = '<div class="status-banner pending-banner">⏳ Waiting for Admin Approval</div>';
   } else if (pkg.approvalStatus === 'Approved') {
-    approvalBadge = pkg.finished
-      ? '<div class="status-banner approved-banner">🎉 Package Completed — Thank you!</div>'
-      : '<div class="status-banner approved-banner">✅ Approved — Book your sessions below!</div>';
+    if (pkg.expired) {
+      approvalBadge = '<div class="status-banner rejected-banner">⌛ Package Expired — the 2-month validity period has ended.</div>';
+    } else {
+      approvalBadge = pkg.finished
+        ? '<div class="status-banner approved-banner">🎉 Package Completed — Thank you!</div>'
+        : '<div class="status-banner approved-banner">✅ Approved — Book your sessions below!</div>';
+    }
   } else {
     approvalBadge = '<div class="status-banner rejected-banner">❌ This request was not approved. Please contact the academy.</div>';
   }
@@ -109,7 +113,28 @@ function renderPackage() {
 
     <p class="package-detail-line">💰 Price: AED ${pkg.price} • Payment: ${pkg.paymentStatus} (${pkg.paymentMethod})</p>
     <p class="package-detail-line">📅 ${escapeHtml(pkg.validity)} • 🧊 ${escapeHtml(pkg.freeze)}</p>
+    ${pkg.approvalStatus === 'Approved' && pkg.expiresAt ? `<p class="package-detail-line">${pkg.expired ? '⌛ Expired on' : '⏳ Valid until'}: ${new Date(pkg.expiresAt).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })}</p>` : ''}
+    ${buildTerms(pkg)}
   `;
+}
+
+function buildTerms(pkg) {
+  const multi = (pkg.sessionsTotal || 1) > 1;
+  const lines = [];
+  lines.push('Sessions must be cancelled at least <strong>24 hours</strong> in advance. Cancelled in time, the session returns to your balance to rebook within your validity period.');
+  lines.push('No-shows and sessions cancelled less than 24 hours before start are marked completed and <strong>cannot be refunded or rearranged</strong>.');
+  if (multi) {
+    lines.push('This package is valid for <strong>2 months</strong> from the date of approval. Any unused sessions <strong>expire</strong> at the end of this period and are <strong>non-refundable</strong>.');
+    lines.push('In case of emergency (e.g. travel), the package may be <strong>frozen</strong>, for a <strong>maximum of 14 days in total</strong>, which extends the validity by the frozen days. The 14-day allowance is the maximum and is intended for emergencies only.');
+  }
+  lines.push('All bookings are subject to availability and academy operating hours (6:00 AM – 5:00 PM).');
+  return `
+    <details class="terms-details">
+      <summary>Terms &amp; Conditions</summary>
+      <ul class="terms-list">
+        ${lines.map(l => `<li>${l}</li>`).join('')}
+      </ul>
+    </details>`;
 }
 
 function renderRefundCard() {
