@@ -64,11 +64,15 @@ const TRAINING_PACKAGES = {
 function showSubPackage() {
   const category = document.getElementById('category').value;
   const isTraining = category === 'Riding Packages';
+  const isLivery   = category === 'Livery Horse';
 
   document.getElementById('subPackageGroup').style.display = isTraining ? 'flex' : 'none';
   document.getElementById('paymentMethodRow').style.display = isTraining ? 'flex' : 'none';
   document.getElementById('dateFieldGroup').style.display = isTraining ? 'none' : 'flex';
-  document.getElementById('schedulingRow').style.display = isTraining ? 'none' : 'flex';
+  // Livery shows only date + horse name — session scheduling happens AFTER admin approval
+  document.getElementById('schedulingRow').style.display = (isTraining || isLivery) ? 'none' : 'flex';
+  const horseRow = document.getElementById('horseNameRow');
+  if (horseRow) horseRow.style.display = isLivery ? 'flex' : 'none';
 
   if (!isTraining) {
     document.getElementById('packageTierRow').style.display = 'none';
@@ -332,6 +336,39 @@ if (bookingFormEl) {
         document.getElementById('paymentMethodRow').style.display = 'none';
         document.getElementById('packageTierRow').style.display = 'none';
         document.getElementById('packageInfoBox').style.display = 'none';
+      } catch (err) {
+        timeStatus.textContent = '❌ Cannot connect to server. Please check your connection.';
+        timeStatus.className = 'time-status error';
+      }
+      return;
+    }
+
+    if (category === 'Livery Horse') {
+      const horseName = document.getElementById('horseName').value.trim();
+      const preferredDate = document.getElementById('date').value;
+      if (!horseName || !preferredDate) {
+        timeStatus.textContent = '⚠️ Please enter your horse\'s name and a preferred drop-off date.';
+        timeStatus.className = 'time-status error';
+        return;
+      }
+      try {
+        const response = await fetch('/api/livery', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, phone, horseName, preferredDate })
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          timeStatus.textContent = result.message || 'Something went wrong. Please try again.';
+          timeStatus.className = 'time-status error';
+          return;
+        }
+        const trackingUrl = `${window.location.origin}/livery-track.html?token=${result.token}`;
+        document.getElementById('liveryLinkDisplay').href = trackingUrl;
+        document.getElementById('liveryLinkDisplay').textContent = trackingUrl;
+        document.getElementById('liverySuccess').style.display = 'block';
+        document.getElementById('bookingForm').reset();
+        document.getElementById('horseNameRow').style.display = 'none';
       } catch (err) {
         timeStatus.textContent = '❌ Cannot connect to server. Please check your connection.';
         timeStatus.className = 'time-status error';

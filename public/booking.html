@@ -96,9 +96,7 @@
               <option value="">-- Choose a Service --</option>
               <option value="Riding Packages">🏇 Riding Lessons</option>
               <option value="Livery Horse">🏠 Horse Livery</option>
-              <option value="Horse Selling">💎 Horses for Sale</option>
               <option value="Horse Training">🐴 Horse Training</option>
-              <option value="Party Renting">🎉 Horse Rental for Events</option>
             </select>
           </div>
           <div class="form-group" id="subPackageGroup" style="display:none;">
@@ -113,6 +111,14 @@
               <option value="Hand Ride">Hand Ride</option>
             </select>
           </div>
+        </div>
+
+        <div class="form-row" id="horseNameRow" style="display:none;">
+          <div class="form-group">
+            <label>Horse Name *</label>
+            <input type="text" id="horseName" placeholder="Your horse's name"/>
+          </div>
+          <div class="form-group"></div>
         </div>
 
         <div class="form-row" id="packageTierRow" style="display:none;">
@@ -180,6 +186,12 @@
           ✅ Your package request has been submitted for approval!<br>
           📌 Save this link to track your sessions and book classes once approved:<br>
           <a href="#" id="trackingLinkDisplay" target="_blank" style="word-break:break-all;"></a>
+        </div>
+
+        <div class="form-success" id="liverySuccess" style="display:none;">
+          ✅ Your livery request has been submitted! Our team will review it shortly.<br>
+          📌 Save this link to track your horse's livery status:<br>
+          <a href="#" id="liveryLinkDisplay" target="_blank" style="word-break:break-all;"></a>
         </div>
 
       </form>
