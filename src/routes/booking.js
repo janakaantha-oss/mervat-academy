@@ -8,7 +8,8 @@ const { sendEmail, sendReminderEmail } = require('../utils/mailer');
 const { sendWhatsApp } = require('../utils/whatsapp');
 const { sendSMS } = require('../utils/sms');
 const { buildStatusUpdateEmailHtml, buildStatusUpdateWhatsAppText } = require('../utils/messageTemplates');
-const { notifyAll } = require('../utils/notifier');
+const { notifyAll, actionUrl, ADMIN_ACTION_KEY } = require('../utils/notifier');
+const { actionPage } = require('../utils/actionPage');
 
 function timeToMinutes(timeStr) {
   const [time, period] = timeStr.split(' ');
@@ -201,63 +202,81 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+async function applyBookingStatus(booking, status) {
+  const previousStatus = booking.status;
+  if (previousStatus === status) return;
+  booking.status = status;
+  await booking.save();
+
+  if (!booking.packagePurchaseId) return;
+  const pkg = await PackagePurchase.findById(booking.packagePurchaseId);
+  if (!pkg) return;
+
+  let notifyData = null;
+  if (status === 'Cancelled' && previousStatus !== 'Cancelled') {
+    pkg.sessionsBooked = Math.max(0, pkg.sessionsBooked - 1);
+    notifyData = {
+      statusBadge: { bg: '#f8d7da', color: '#a71d2a', text: '❌ Session Not Approved' },
+      bodyText: `Your session on <strong>${booking.date} at ${booking.startTime}</strong> could not be confirmed. Please select another date using the link below.`,
+      statusLine: 'Your session was declined — please pick another date.',
+      ctaLabel: 'Choose Another Date'
+    };
+  }
+  if (status === 'Confirmed' && previousStatus !== 'Confirmed') {
+    notifyData = {
+      statusBadge: { bg: '#d4edda', color: '#1e7e34', text: '✅ Session Confirmed' },
+      bodyText: `Your session on <strong>${booking.date} at ${booking.startTime}</strong> has been confirmed. We look forward to seeing you!`,
+      statusLine: 'Your session has been confirmed! ✅'
+    };
+  }
+  if (status === 'Completed' && previousStatus !== 'Completed') {
+    pkg.sessionsCompleted = Math.min(pkg.sessionsTotal, pkg.sessionsCompleted + 1);
+    if (pkg.sessionsCompleted >= pkg.sessionsTotal) pkg.finished = true;
+    const pending = pkg.sessionsTotal - pkg.sessionsCompleted;
+    notifyData = {
+      statusBadge: { bg: '#e0c89a', color: '#5c3d1a', text: '🎉 Session Completed' },
+      bodyText: `Great work! Your session on <strong>${booking.date}</strong> has been marked as completed. You have <strong>${pending}</strong> session(s) remaining in your package.`,
+      statusLine: 'Your session is complete! 🎉'
+    };
+  }
+
+  await pkg.save();
+
+  if (notifyData) {
+    const trackingUrl = `${process.env.PUBLIC_BASE_URL || ''}/track.html?token=${pkg.token}`;
+    notifyAll({
+      customer: { name: pkg.name, email: pkg.email, phone: pkg.phone },
+      subject: '🐴 Legacy Équestre — Update on Your Session',
+      emailHtml: buildStatusUpdateEmailHtml({ name: pkg.name, title: pkg.title, trackingUrl, ...notifyData }),
+      waText: buildStatusUpdateWhatsAppText({ name: pkg.name, title: pkg.title, trackingUrl, statusLine: notifyData.statusLine, bodyText: notifyData.bodyText })
+    });
+  }
+}
+
+// One-click admin session actions (from email / WhatsApp, no login)
+async function oneClickBookingAction(req, res, status, title, msgVerb) {
+  if (req.query.key !== ADMIN_ACTION_KEY) return res.status(403).send(actionPage({ ok: false, title: 'Unauthorized', message: 'Invalid or missing security key.' }));
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.status(404).send(actionPage({ ok: false, title: 'Not Found', message: 'This session no longer exists.' }));
+    await applyBookingStatus(booking, status);
+    res.send(actionPage({ ok: true, title, message: `${booking.name}'s session on ${booking.date} at ${booking.startTime} has been ${msgVerb}. The customer has been notified.` }));
+  } catch (err) {
+    res.status(500).send(actionPage({ ok: false, title: 'Error', message: 'Something went wrong. Please use the dashboard.' }));
+  }
+}
+
+router.get('/:id/confirm', (req, res) => oneClickBookingAction(req, res, 'Confirmed', 'Session Confirmed', 'confirmed'));
+router.get('/:id/decline', (req, res) => oneClickBookingAction(req, res, 'Cancelled', 'Session Declined', 'declined'));
+router.get('/:id/complete', (req, res) => oneClickBookingAction(req, res, 'Completed', 'Session Completed', 'marked completed'));
+
 router.patch('/:id/status', async (req, res) => {
   try {
     const { status } = req.body;
     const booking = await Booking.findById(req.params.id);
     if (!booking) return res.status(404).json({ message: 'Booking not found' });
-
-    const previousStatus = booking.status;
-    booking.status = status;
-    await booking.save();
-
+    await applyBookingStatus(booking, status);
     res.json({ message: '✅ Status updated', booking });
-
-    if (booking.packagePurchaseId) {
-      const pkg = await PackagePurchase.findById(booking.packagePurchaseId);
-      if (pkg) {
-        let notifyData = null;
-
-        if (status === 'Cancelled' && previousStatus !== 'Cancelled') {
-          pkg.sessionsBooked = Math.max(0, pkg.sessionsBooked - 1);
-          notifyData = {
-            statusBadge: { bg: '#f8d7da', color: '#a71d2a', text: '❌ Session Not Approved' },
-            bodyText: `Your session on <strong>${booking.date} at ${booking.startTime}</strong> could not be confirmed. Please select another date using the link below.`,
-            statusLine: 'Your session was declined — please pick another date.',
-            ctaLabel: 'Choose Another Date'
-          };
-        }
-        if (status === 'Confirmed' && previousStatus !== 'Confirmed') {
-          notifyData = {
-            statusBadge: { bg: '#d4edda', color: '#1e7e34', text: '✅ Session Confirmed' },
-            bodyText: `Your session on <strong>${booking.date} at ${booking.startTime}</strong> has been confirmed. We look forward to seeing you!`,
-            statusLine: 'Your session has been confirmed! ✅'
-          };
-        }
-        if (status === 'Completed' && previousStatus !== 'Completed') {
-          pkg.sessionsCompleted = Math.min(pkg.sessionsTotal, pkg.sessionsCompleted + 1);
-          if (pkg.sessionsCompleted >= pkg.sessionsTotal) pkg.finished = true;
-          const pending = pkg.sessionsTotal - pkg.sessionsCompleted;
-          notifyData = {
-            statusBadge: { bg: '#e0c89a', color: '#5c3d1a', text: '🎉 Session Completed' },
-            bodyText: `Great work! Your session on <strong>${booking.date}</strong> has been marked as completed. You have <strong>${pending}</strong> session(s) remaining in your package.`,
-            statusLine: 'Your session is complete! 🎉'
-          };
-        }
-
-        await pkg.save();
-
-        if (notifyData) {
-          const trackingUrl = `${process.env.PUBLIC_BASE_URL || ''}/track.html?token=${pkg.token}`;
-          notifyAll({
-            customer: { name: pkg.name, email: pkg.email, phone: pkg.phone },
-            subject: '🐴 Legacy Équestre — Update on Your Session',
-            emailHtml: buildStatusUpdateEmailHtml({ name: pkg.name, title: pkg.title, trackingUrl, ...notifyData }),
-            waText: buildStatusUpdateWhatsAppText({ name: pkg.name, title: pkg.title, trackingUrl, statusLine: notifyData.statusLine, bodyText: notifyData.bodyText })
-          });
-        }
-      }
-    }
   } catch (err) {
     res.status(500).json({ message: '❌ Error updating status' });
   }

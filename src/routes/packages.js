@@ -7,7 +7,8 @@ const ClosedDay = require('../models/ClosedDay');
 const { sendEmail } = require('../utils/mailer');
 const { sendWhatsApp } = require('../utils/whatsapp');
 const { sendSMS } = require('../utils/sms');
-const { notifyAll } = require('../utils/notifier');
+const { notifyAll, actionUrl, ADMIN_ACTION_KEY } = require('../utils/notifier');
+const { actionPage } = require('../utils/actionPage');
 const {
   buildPackageEmailHtml, buildPackageWhatsAppText,
   buildStatusUpdateEmailHtml, buildStatusUpdateWhatsAppText
@@ -58,7 +59,11 @@ router.post('/', async (req, res) => {
       customer: { name: pkg.name, email: pkg.email, phone: pkg.phone },
       subject: '🐴 Your Legacy Équestre Package Request',
       emailHtml,
-      waText
+      waText,
+      adminActions: [
+        { label: '✅ Approve', url: actionUrl(`/api/packages/${pkg._id}/approve`), color: '#1e7e34' },
+        { label: '❌ Reject', url: actionUrl(`/api/packages/${pkg._id}/reject`), color: '#a71d2a' }
+      ]
     });
   } catch (err) {
     res.status(500).json({ message: '❌ Error submitting package request', error: err.message });
@@ -149,6 +154,24 @@ router.post('/:id/book-session', async (req, res) => {
     await pkg.save();
 
     res.status(201).json({ message: '✅ Session booked!', booking });
+
+    // Alert admin with one-click confirm/decline (customer already saw on-screen confirmation)
+    notifyAll({
+      customer: { name: pkg.name, email: pkg.email, phone: pkg.phone },
+      subject: '🐴 New Session Booked',
+      emailHtml: buildStatusUpdateEmailHtml({
+        name: pkg.name, title: pkg.title,
+        statusBadge: { bg: '#e6ede0', color: '#4a5c39', text: '📅 New Session Booked' },
+        bodyText: `A new session was booked for <strong>${date} at ${startTime}</strong> (${pkg.packageType} — ${pkg.tierLabel}).`,
+        trackingUrl: null
+      }),
+      waText: `📅 New session booked\n${date} at ${startTime}\n${pkg.packageType} — ${pkg.tierLabel}`,
+      adminActions: [
+        { label: '✅ Confirm', url: actionUrl(`/api/bookings/${booking._id}/confirm`), color: '#1e7e34' },
+        { label: '❌ Decline', url: actionUrl(`/api/bookings/${booking._id}/decline`), color: '#a71d2a' }
+      ],
+      toCustomer: false
+    });
   } catch (err) {
     res.status(500).json({ message: '❌ Error booking session', error: err.message });
   }
@@ -178,6 +201,61 @@ router.get('/', async (req, res) => {
   }
 });
 
+async function applyPackageApproval(pkg) {
+  const now = new Date();
+  const exp = new Date(now);
+  exp.setMonth(exp.getMonth() + 2);
+  pkg.approvalStatus = 'Approved';
+  pkg.approvedAt = now;
+  pkg.expiresAt = exp;
+  pkg.expired = false;
+  await pkg.save();
+  notifyPackage(pkg, {
+    statusBadge: { bg: '#d4edda', color: '#1e7e34', text: '✅ Package Approved' },
+    bodyText: `Great news! Your <strong>${pkg.packageType} — ${pkg.tierLabel}</strong> package has been approved. Please select your preferred dates and times for your sessions using the link below.`,
+    statusLine: 'Your package has been approved! ✅',
+    ctaLabel: 'Select My Sessions'
+  });
+}
+
+async function applyPackageRejection(pkg) {
+  pkg.approvalStatus = 'Rejected';
+  await pkg.save();
+  notifyPackage(pkg, {
+    statusBadge: { bg: '#f8d7da', color: '#a71d2a', text: '❌ Request Not Approved' },
+    bodyText: `We're sorry, but we're unable to approve your <strong>${pkg.packageType} — ${pkg.tierLabel}</strong> request at this time. Please contact us directly so we can assist you further.`,
+    statusLine: 'Your package request was not approved.',
+    includeLink: false
+  });
+}
+
+// ===== One-click admin action links (from email / WhatsApp, no login) =====
+router.get('/:id/approve', async (req, res) => {
+  if (req.query.key !== ADMIN_ACTION_KEY) return res.status(403).send(actionPage({ ok: false, title: 'Unauthorized', message: 'Invalid or missing security key.' }));
+  try {
+    const pkg = await PackagePurchase.findById(req.params.id);
+    if (!pkg) return res.status(404).send(actionPage({ ok: false, title: 'Not Found', message: 'This package no longer exists.' }));
+    if (pkg.approvalStatus === 'Approved') return res.send(actionPage({ ok: true, title: 'Already Approved', message: `${pkg.name}'s ${pkg.packageType} — ${pkg.tierLabel} package is already approved.` }));
+    await applyPackageApproval(pkg);
+    res.send(actionPage({ ok: true, title: 'Package Approved', message: `${pkg.name}'s ${pkg.packageType} — ${pkg.tierLabel} package is now approved. The customer has been notified and can book sessions.` }));
+  } catch (err) {
+    res.status(500).send(actionPage({ ok: false, title: 'Error', message: 'Something went wrong. Please use the dashboard.' }));
+  }
+});
+
+router.get('/:id/reject', async (req, res) => {
+  if (req.query.key !== ADMIN_ACTION_KEY) return res.status(403).send(actionPage({ ok: false, title: 'Unauthorized', message: 'Invalid or missing security key.' }));
+  try {
+    const pkg = await PackagePurchase.findById(req.params.id);
+    if (!pkg) return res.status(404).send(actionPage({ ok: false, title: 'Not Found', message: 'This package no longer exists.' }));
+    if (pkg.approvalStatus === 'Rejected') return res.send(actionPage({ ok: true, title: 'Already Rejected', message: `This request was already rejected.` }));
+    await applyPackageRejection(pkg);
+    res.send(actionPage({ ok: true, title: 'Request Rejected', message: `${pkg.name}'s request has been rejected and the customer has been notified.` }));
+  } catch (err) {
+    res.status(500).send(actionPage({ ok: false, title: 'Error', message: 'Something went wrong. Please use the dashboard.' }));
+  }
+});
+
 router.patch('/:id', async (req, res) => {
   try {
     const before = await PackagePurchase.findById(req.params.id);
@@ -188,31 +266,12 @@ router.patch('/:id', async (req, res) => {
 
     // Package approved
     if (req.body.approvalStatus === 'Approved' && before.approvalStatus !== 'Approved') {
-      // Start the 2-month validity clock from approval
-      const now = new Date();
-      const exp = new Date(now);
-      exp.setMonth(exp.getMonth() + 2);
-      pkg.approvedAt = now;
-      pkg.expiresAt = exp;
-      pkg.expired = false;
-      await pkg.save();
-
-      notifyPackage(pkg, {
-        statusBadge: { bg: '#d4edda', color: '#1e7e34', text: '✅ Package Approved' },
-        bodyText: `Great news! Your <strong>${pkg.packageType} — ${pkg.tierLabel}</strong> package has been approved. Please select your preferred dates and times for your sessions using the link below.`,
-        statusLine: 'Your package has been approved! ✅',
-        ctaLabel: 'Select My Sessions'
-      });
+      await applyPackageApproval(pkg);
     }
 
     // Package rejected
     if (req.body.approvalStatus === 'Rejected' && before.approvalStatus !== 'Rejected') {
-      notifyPackage(pkg, {
-        statusBadge: { bg: '#f8d7da', color: '#a71d2a', text: '❌ Request Not Approved' },
-        bodyText: `We're sorry, but we're unable to approve your <strong>${pkg.packageType} — ${pkg.tierLabel}</strong> request at this time. Please contact us directly so we can assist you further.`,
-        statusLine: 'Your package request was not approved.',
-        includeLink: false
-      });
+      await applyPackageRejection(pkg);
     }
 
     // Payment confirmed
