@@ -102,6 +102,9 @@ router.post('/:id/book-session', async (req, res) => {
     if (pkg.expired || (pkg.expiresAt && new Date() > new Date(pkg.expiresAt))) {
       return res.status(403).json({ message: '❌ This package has expired. Unused sessions are no longer available.' });
     }
+    if (pkg.frozen) {
+      return res.status(403).json({ message: '❄️ This package is currently frozen. Please unfreeze it before booking sessions.' });
+    }
     const remaining = pkg.sessionsTotal - pkg.sessionsBooked;
     if (remaining <= 0) {
       return res.status(403).json({ message: '❌ No remaining sessions to book.' });
@@ -174,6 +177,127 @@ router.post('/:id/book-session', async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: '❌ Error booking session', error: err.message });
+  }
+});
+
+const FREEZE_MAX_DAYS = 14;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+function freezeDaysLeft(pkg) {
+  return Math.max(0, FREEZE_MAX_DAYS - (pkg.freezeDaysUsed || 0));
+}
+
+async function applyFreeze(pkg) {
+  pkg.frozen = true;
+  pkg.freezeRequested = false;
+  pkg.freezeStartedAt = new Date();
+  await pkg.save();
+  notifyPackage(pkg, {
+    statusBadge: { bg: '#e4ecf2', color: '#2f5975', text: '❄️ Package Frozen' },
+    bodyText: `Your <strong>${pkg.packageType} — ${pkg.tierLabel}</strong> package has been frozen. Your remaining sessions and validity are safe. You have up to <strong>${Math.floor(freezeDaysLeft(pkg))} day(s)</strong> of freeze remaining. Booking will resume once the package is unfrozen.`,
+    statusLine: 'Your package is now frozen ❄️',
+    ctaLabel: 'View My Package'
+  });
+}
+
+// Ends a freeze: extends expiry by the frozen duration (capped to the 14-day budget), resumes booking.
+async function applyUnfreeze(pkg, auto = false) {
+  if (!pkg.frozen || !pkg.freezeStartedAt) { pkg.frozen = false; pkg.freezeStartedAt = null; await pkg.save(); return; }
+  const now = new Date();
+  const frozenMs = now - new Date(pkg.freezeStartedAt);
+  const budgetLeftMs = freezeDaysLeft(pkg) * DAY_MS;
+  const effMs = Math.max(0, Math.min(frozenMs, budgetLeftMs));
+
+  // Frozen packages are skipped by the expiry cron, so expiresAt is intact — just push it forward.
+  if (pkg.expiresAt) pkg.expiresAt = new Date(new Date(pkg.expiresAt).getTime() + effMs);
+  pkg.freezeDaysUsed = Math.min(FREEZE_MAX_DAYS, (pkg.freezeDaysUsed || 0) + effMs / DAY_MS);
+  pkg.frozen = false;
+  pkg.freezeStartedAt = null;
+  await pkg.save();
+
+  const newExpiry = pkg.expiresAt ? new Date(pkg.expiresAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+  notifyPackage(pkg, {
+    statusBadge: { bg: '#d4edda', color: '#1e7e34', text: '✅ Package Reactivated' },
+    bodyText: `${auto ? 'Your freeze period has ended.' : 'Your package has been unfrozen.'} Your <strong>${pkg.packageType} — ${pkg.tierLabel}</strong> package is active again and you can book your remaining sessions. New validity: <strong>${newExpiry}</strong>.`,
+    statusLine: auto ? 'Your freeze period has ended — package reactivated ✅' : 'Your package is active again ✅',
+    ctaLabel: 'Book My Sessions'
+  });
+}
+
+// ===== Customer requests a freeze =====
+router.post('/:id/request-freeze', async (req, res) => {
+  try {
+    const pkg = await PackagePurchase.findById(req.params.id);
+    if (!pkg) return res.status(404).json({ message: 'Package not found' });
+    if (pkg.approvalStatus !== 'Approved' || pkg.finished || pkg.expired) {
+      return res.status(403).json({ message: '❌ Only active packages can be frozen.' });
+    }
+    if (pkg.frozen) return res.status(400).json({ message: '❄️ This package is already frozen.' });
+    if (pkg.freezeRequested) return res.status(400).json({ message: '⏳ A freeze request is already pending admin approval.' });
+    if (freezeDaysLeft(pkg) <= 0) return res.status(403).json({ message: '❌ You have used your full 14-day freeze allowance for this package.' });
+
+    pkg.freezeRequested = true;
+    await pkg.save();
+
+    // Alert admin with one-click Approve Freeze
+    notifyAll({
+      customer: { name: pkg.name, email: pkg.email, phone: pkg.phone },
+      subject: '🐴 Freeze Request',
+      emailHtml: buildStatusUpdateEmailHtml({
+        name: pkg.name, title: pkg.title,
+        statusBadge: { bg: '#e4ecf2', color: '#2f5975', text: '❄️ Freeze Requested' },
+        bodyText: `A freeze has been requested for the <strong>${pkg.packageType} — ${pkg.tierLabel}</strong> package (${Math.floor(freezeDaysLeft(pkg))} freeze-day(s) remaining).`,
+        trackingUrl: null
+      }),
+      waText: `❄️ Freeze requested for ${pkg.packageType} — ${pkg.tierLabel}\nFreeze days remaining: ${Math.floor(freezeDaysLeft(pkg))}`,
+      adminActions: [{ label: '❄️ Approve Freeze', url: actionUrl(`/api/packages/${pkg._id}/freeze`), color: '#2f5975' }],
+      toCustomer: false
+    });
+
+    res.json({ message: '✅ Freeze request submitted! Our team will review it shortly.' });
+  } catch (err) {
+    res.status(500).json({ message: '❌ Error requesting freeze' });
+  }
+});
+
+// ===== Admin approves freeze (one-click link) =====
+router.get('/:id/freeze', async (req, res) => {
+  if (req.query.key !== ADMIN_ACTION_KEY) return res.status(403).send(actionPage({ ok: false, title: 'Unauthorized', message: 'Invalid or missing security key.' }));
+  try {
+    const pkg = await PackagePurchase.findById(req.params.id);
+    if (!pkg) return res.status(404).send(actionPage({ ok: false, title: 'Not Found', message: 'This package no longer exists.' }));
+    if (pkg.frozen) return res.send(actionPage({ ok: true, title: 'Already Frozen', message: `${pkg.name}'s package is already frozen.` }));
+    if (freezeDaysLeft(pkg) <= 0) return res.send(actionPage({ ok: false, title: 'No Freeze Days Left', message: `${pkg.name} has used the full 14-day freeze allowance.` }));
+    await applyFreeze(pkg);
+    res.send(actionPage({ ok: true, title: 'Package Frozen', message: `${pkg.name}'s package is now frozen and moved to the Frozen tab. The customer has been notified.` }));
+  } catch (err) {
+    res.status(500).send(actionPage({ ok: false, title: 'Error', message: 'Something went wrong. Please use the dashboard.' }));
+  }
+});
+
+// ===== Admin freeze / unfreeze from dashboard =====
+router.post('/:id/freeze', async (req, res) => {
+  try {
+    const pkg = await PackagePurchase.findById(req.params.id);
+    if (!pkg) return res.status(404).json({ message: 'Package not found' });
+    if (pkg.frozen) return res.status(400).json({ message: 'Already frozen.' });
+    if (freezeDaysLeft(pkg) <= 0) return res.status(403).json({ message: '❌ Full 14-day freeze allowance used.' });
+    await applyFreeze(pkg);
+    res.json({ message: '❄️ Package frozen.', package: pkg });
+  } catch (err) {
+    res.status(500).json({ message: '❌ Error freezing package' });
+  }
+});
+
+router.post('/:id/unfreeze', async (req, res) => {
+  try {
+    const pkg = await PackagePurchase.findById(req.params.id);
+    if (!pkg) return res.status(404).json({ message: 'Package not found' });
+    if (!pkg.frozen) return res.status(400).json({ message: 'This package is not frozen.' });
+    await applyUnfreeze(pkg, false);
+    res.json({ message: '✅ Package unfrozen and back in active bookings.', package: pkg });
+  } catch (err) {
+    res.status(500).json({ message: '❌ Error unfreezing package' });
   }
 });
 
@@ -288,4 +412,7 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
+router.applyFreeze = applyFreeze;
+router.applyUnfreeze = applyUnfreeze;
+router.freezeDaysLeft = freezeDaysLeft;
 module.exports = router;

@@ -149,12 +149,24 @@ function startReminderJob() {
 
         console.log(`⌛ Package ${pkg._id} expired (kept in records).`);
       }
+
+      // Auto-unfreeze packages that have reached the 14-day freeze budget
+      const packagesRouter = require('../routes/packages');
+      const frozen = await PackagePurchase.find({ frozen: true, freezeStartedAt: { $exists: true } });
+      for (const pkg of frozen) {
+        const frozenDays = (now - new Date(pkg.freezeStartedAt)) / (24 * 60 * 60 * 1000);
+        const budgetLeft = 14 - (pkg.freezeDaysUsed || 0);
+        if (frozenDays >= budgetLeft) {
+          await packagesRouter.applyUnfreeze(pkg, true);
+          console.log(`❄️→✅ Package ${pkg._id} auto-unfrozen (14-day budget reached).`);
+        }
+      }
     } catch (err) {
-      console.log('❌ Package expiry job error:', err);
+      console.log('❌ Package expiry/freeze job error:', err);
     }
   });
 
-  console.log('⏰ Package expiry system is active (checks hourly)');
+  console.log('⏰ Package expiry + freeze system is active (checks hourly)');
 }
 
 module.exports = { startReminderJob, parseBookingDateTime };

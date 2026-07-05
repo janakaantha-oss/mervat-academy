@@ -57,7 +57,7 @@ async function loadPackage() {
     renderRefundCard();
 
     const remaining = currentPackage.sessionsTotal - currentPackage.sessionsBooked;
-    if (currentPackage.approvalStatus === 'Approved' && !currentPackage.finished && remaining > 0) {
+    if (currentPackage.approvalStatus === 'Approved' && !currentPackage.finished && !currentPackage.expired && !currentPackage.frozen && remaining > 0) {
       document.getElementById('bookingCard').style.display = 'block';
       document.getElementById('sessionTimeLabel').textContent = `Time (${currentPackage.sessionDuration || 45} min)`;
       document.getElementById('sessionDate').addEventListener('change', refreshSessionTimes);
@@ -113,9 +113,43 @@ function renderPackage() {
 
     <p class="package-detail-line">💰 Price: AED ${pkg.price} • Payment: ${pkg.paymentStatus} (${pkg.paymentMethod})</p>
     <p class="package-detail-line">📅 ${escapeHtml(pkg.validity)} • 🧊 ${escapeHtml(pkg.freeze)}</p>
-    ${pkg.approvalStatus === 'Approved' && pkg.expiresAt ? `<p class="package-detail-line">${pkg.expired ? '⌛ Expired on' : '⏳ Valid until'}: ${new Date(pkg.expiresAt).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })}</p>` : ''}
+    ${pkg.approvalStatus === 'Approved' && pkg.expiresAt ? `<p class="package-detail-line">${pkg.expired ? '⌛ Expired on' : (pkg.frozen ? '❄️ Frozen — validity paused. Was valid until' : '⏳ Valid until')}: ${new Date(pkg.expiresAt).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })}</p>` : ''}
+    ${renderFreezeControls(pkg)}
     ${buildTerms(pkg)}
   `;
+}
+
+function renderFreezeControls(pkg) {
+  if (pkg.approvalStatus !== 'Approved' || pkg.finished || pkg.expired) return '';
+  const daysLeft = Math.max(0, 14 - Math.round(pkg.freezeDaysUsed || 0));
+  const remaining = pkg.sessionsTotal - pkg.sessionsBooked;
+
+  if (pkg.frozen) {
+    return `<div class="status-banner frozen-banner" style="margin-top:14px;">❄️ Your package is frozen — booking is paused. Please contact us to unfreeze.</div>`;
+  }
+  if (pkg.freezeRequested) {
+    return `<div class="status-banner pending-banner" style="margin-top:14px;">⏳ Your freeze request is awaiting admin approval.</div>`;
+  }
+  if (daysLeft > 0 && remaining > 0) {
+    return `
+      <div style="margin-top:16px; text-align:center;">
+        <button class="btn-freeze" onclick="requestFreeze()">❄️ Request Freeze (${daysLeft} day${daysLeft===1?'':'s'} left)</button>
+        <p class="sub-label" style="margin-top:6px; font-size:0.75rem; color:#9a938c;">For emergencies (e.g. travel). Pauses your validity — up to 14 days total.</p>
+      </div>`;
+  }
+  return '';
+}
+
+async function requestFreeze() {
+  if (!confirm('Request to freeze this package? Your remaining sessions and validity will be paused (up to 14 days total) once an admin approves.')) return;
+  try {
+    const res = await fetch(`/api/packages/${currentPackage._id}/request-freeze`, { method: 'POST' });
+    const result = await res.json();
+    alert(result.message);
+    await loadPackage();
+  } catch (err) {
+    alert('Could not submit your freeze request. Please try again.');
+  }
 }
 
 function buildTerms(pkg) {

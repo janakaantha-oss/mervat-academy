@@ -861,6 +861,14 @@ function renderPackages() {
     if (!p.finished) {
       actionButtons += `<button class="btn-small btn-finish" onclick="finishPackage('${p._id}')">📁 Mark Finished</button>`;
     }
+    if (p.approvalStatus === 'Approved' && !p.finished && !p.expired) {
+      const fzLeft = Math.max(0, 14 - Math.round(p.freezeDaysUsed || 0));
+      if (p.frozen) {
+        actionButtons += `<button class="btn-small" style="background:#2f5975;color:#fff;" onclick="unfreezePackage('${p._id}')">☀️ Unfreeze</button>`;
+      } else if (fzLeft > 0) {
+        actionButtons += `<button class="btn-small" style="background:#e4ecf2;color:#2f5975;" onclick="freezePackage('${p._id}')">❄️ Freeze${p.freezeRequested ? ' ✓Req' : ''} (${fzLeft}d)</button>`;
+      }
+    }
     if (p.refundStatus === 'Pending') {
       actionButtons += `<button class="btn-small btn-mark-refunded" onclick="markRefunded('${p._id}')">💸 Mark Refunded</button>`;
     }
@@ -877,6 +885,8 @@ function renderPackages() {
             <span class="approval-badge approval-${approvalClass}">${p.approvalStatus}</span>
             <span class="payment-badge payment-${p.paymentStatus.toLowerCase()}">${p.paymentStatus} (${p.paymentMethod})</span>
             ${p.finished ? '<span class="approval-badge" style="background:#e8e0d5;color:#555;">Finished</span>' : ''}
+            ${p.frozen ? '<span class="approval-badge" style="background:#e4ecf2;color:#2f5975;">❄️ Frozen</span>' : ''}
+            ${!p.frozen && p.freezeRequested ? '<span class="approval-badge" style="background:#fff3cd;color:#8a6d00;">⏳ Freeze Requested</span>' : ''}
             ${p.refundStatus && p.refundStatus !== 'Not Applicable' ? `<span class="refund-status-badge refund-${p.refundStatus.toLowerCase()}">${p.refundStatus === 'Pending' ? '⏳ Refund Requested' : '💸 Refunded'}</span>` : ''}
             ${p.refundStatus === 'Pending' ? `<p class="payment-method-note">${p.paymentMethod === 'Card' ? '💳 Paid by card — process the refund in your payment system, then mark it Refunded here.' : '💵 Paid by cash — settle directly with the customer, then mark it Refunded here.'}</p>` : ''}
           </div>
@@ -898,6 +908,22 @@ function renderPackages() {
       </div>
     `;
   }).join('');
+}
+
+async function freezePackage(id) {
+  if (!confirm('Freeze this package? Its 2-month validity will pause and it moves out of active bookings until you unfreeze it.')) return;
+  const res = await fetch(`/api/packages/${id}/freeze`, { method: 'POST' });
+  const result = await res.json();
+  if (!res.ok) alert(result.message || 'Could not freeze.');
+  loadPackages();
+}
+
+async function unfreezePackage(id) {
+  if (!confirm('Unfreeze this package? It returns to active bookings and its validity is extended by the frozen days.')) return;
+  const res = await fetch(`/api/packages/${id}/unfreeze`, { method: 'POST' });
+  const result = await res.json();
+  if (!res.ok) alert(result.message || 'Could not unfreeze.');
+  loadPackages();
 }
 
 async function approvePackage(id) {

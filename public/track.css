@@ -129,3 +129,11 @@ body {
 .terms-details .terms-list li {
   font-size:0.8rem; color:#6b6560; line-height:1.6; margin-bottom:8px;
 }
+
+/* Freeze button */
+.btn-freeze {
+  background:#e4ecf2; color:#2f5975; border:1px solid #c5d6e2;
+  padding:11px 22px; border-radius:8px; font-family:'Inter',sans-serif;
+  font-size:0.82rem; font-weight:600; cursor:pointer; transition:opacity 0.2s;
+}
+.btn-freeze:hover { opacity:0.85; }
