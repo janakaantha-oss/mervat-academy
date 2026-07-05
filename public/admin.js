@@ -98,6 +98,19 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+// Show duration readably: 45-min package sessions were stored as 0.75 -> "45 min"; 1/2/4 -> "1h"
+function durationLabel(d) {
+  if (d == null || isNaN(d)) return '-';
+  if (d < 1) return `${Math.round(d * 60)} min`;
+  return `${d % 1 === 0 ? d : d.toFixed(2)}h`;
+}
+
+// Package sessions carry price 0 (paid via the package). Show that clearly instead of "AED 0".
+function priceLabel(b) {
+  if (b.packagePurchaseId) return 'Incl. in package';
+  return `AED ${(b.price || 0).toFixed(0)}`;
+}
+
 function openModal(html) {
   document.getElementById('modalContent').innerHTML = html;
   document.getElementById('modalOverlay').style.display = 'flex';
@@ -338,7 +351,7 @@ function renderDailyBookings(dateStr) {
       card.className = 'mini-booking-card';
       card.innerHTML = `
         <div>
-          <strong>${escapeHtml(b.name)}</strong> — ${b.startTime} (${b.duration}h) — AED ${(b.price||0).toFixed(0)}
+          <strong>${escapeHtml(b.name)}</strong> — ${b.startTime} (${durationLabel(b.duration)}) — ${priceLabel(b)}
           ${b.subPackage ? `<br><span class="sub-label">${escapeHtml(b.subPackage)}</span>` : ''}
         </div>
         <div class="booking-actions">
@@ -432,8 +445,8 @@ function renderTable() {
       <td>${escapeHtml(b.category)}</td>
       <td>${escapeHtml(b.subPackage || '-')}</td>
       <td>${escapeHtml(b.date)}</td>
-      <td>${escapeHtml(b.startTime)} (${b.duration}h)</td>
-      <td>AED ${(b.price || 0).toFixed(0)}</td>
+      <td>${escapeHtml(b.startTime)} (${durationLabel(b.duration)})</td>
+      <td>${priceLabel(b)}</td>
       <td><span class="payment-badge payment-${payment.toLowerCase()}">${payment}</span></td>
       <td><span class="status-badge status-${status.toLowerCase()}">${status}</span></td>
       <td>${submitted}</td>
