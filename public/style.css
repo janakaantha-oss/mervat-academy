@@ -157,11 +157,34 @@ h1, h2, h3, .serif {
 
 @media (max-width: 900px) {
   .nav-links { display: none; }
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 72px;
+    left: 0; right: 0;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px;
+    gap: 0;
+    z-index: 999;
+    box-shadow: 0 12px 30px rgba(44,36,32,0.12);
+  }
+  .nav-links.open li { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .nav-links.open li:last-child { border-bottom: none; }
+  .nav-links.open a { font-size: 1rem; }
   .hamburger { display: block; }
   .navbar { padding: 0 20px; }
+  .nav-right { gap: 10px; }
+  .nav-lang { display: none; }
+  .btn-book-now { padding: 10px 18px; font-size: 0.7rem; }
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .about-grid { grid-template-columns: 1fr; gap: 30px; }
+  .about-grid img { height: 300px; }
+  .hero-content h1 { font-size: 3rem; }
+  .hero-cta-row { flex-direction: column; gap: 12px; }
+  .hero-cta-row a { width: 100%; text-align: center; }
 }
-
-/* ======= HERO (full-width cinematic photo) ======= */
 .hero {
   position: relative;
   width: 100%;
@@ -241,10 +264,15 @@ h1, h2, h3, .serif {
 .btn-ghost-white:hover { background: rgba(255,255,255,0.15); }
 
 @media (max-width: 700px) {
-  .hero { height: 50vh; }
-  .hero-content h1 { font-size: 2.4rem; }
-  .hero-centered .hero-content h1 { font-size: 2.8rem; }
-  .hero-content { bottom: 30px; left: 24px; right: 24px; }
+  .hero { height: 50vh; min-height: 300px; }
+  .hero-content h1 { font-size: 2.2rem; }
+  .hero-centered .hero-content h1 { font-size: 2.4rem; }
+  .hero-content { bottom: 24px; left: 20px; right: 20px; }
+  .hero-eyebrow { font-size: 0.65rem; }
+  .hero-breadcrumb { font-size: 0.65rem; }
+  .services-grid { grid-template-columns: 1fr; }
+  .section-heading { font-size: 2rem; }
+  .container { padding: 0 16px; }
 }
 
 /* ======= HOMEPAGE SERVICES GRID ======= */
@@ -750,21 +778,17 @@ h1, h2, h3, .serif {
 .about-grid p { color: var(--brown-light); line-height: 1.8; margin-bottom: 18px; }
 
 /* ===================================================================
-   RESPONSIVE — TABLET & PHONE (fixes cramped mobile/ipad layouts)
+   RESPONSIVE — TABLET & PHONE (consolidated above in main breakpoints)
    =================================================================== */
-@media (max-width: 900px) {
-  .services-grid { grid-template-columns: repeat(2, 1fr); }
-  .about-grid { grid-template-columns: 1fr; gap: 30px; }
-  .about-grid img { height: 300px; }
-}
 @media (max-width: 700px) {
-  .container { padding: 0 20px; }
-  .services-grid { grid-template-columns: 1fr; }
   .stable-gallery { grid-template-columns: 1fr; }
   .form-row { flex-direction: column; gap: 18px; }
   .booking-form { padding: 28px 20px; }
   .selected-package-banner { flex-direction: column; align-items: flex-start; }
-  .section-heading { font-size: 2.2rem; }
-  .pkg-description h2, .pkg-pricing h2 { font-size: 2.2rem; }
+  .pkg-description h2, .pkg-pricing h2 { font-size: 2rem; }
   .single-price-card { min-width: 0; width: 100%; padding: 34px 24px; }
+  .pricing-grid { grid-template-columns: 1fr; gap: 18px; }
+  .pricing-card { margin-top: 0; }
+  .footer-top { flex-direction: column; gap: 24px; text-align: center; }
+  .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
 }

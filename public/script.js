@@ -7,9 +7,18 @@ window.addEventListener('scroll', () => {
 });
 
 const hamburgerEl = document.getElementById('hamburger');
-if (hamburgerEl) {
+const navLinksEl = document.getElementById('navLinks');
+if (hamburgerEl && navLinksEl) {
   hamburgerEl.addEventListener('click', () => {
-    document.getElementById('navLinks').classList.toggle('open');
+    navLinksEl.classList.toggle('open');
+    hamburgerEl.textContent = navLinksEl.classList.contains('open') ? '✕' : '☰';
+  });
+  // Close menu when any link is tapped (mobile)
+  navLinksEl.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinksEl.classList.remove('open');
+      hamburgerEl.textContent = '☰';
+    });
   });
 }
 
