@@ -303,4 +303,5 @@ router.post('/:id/send-reminder', async (req, res) => {
   }
 });
 
+router.applyBookingStatus = applyBookingStatus;
 module.exports = router;

@@ -161,6 +161,19 @@ function startReminderJob() {
           console.log(`❄️→✅ Package ${pkg._id} auto-unfrozen (14-day budget reached).`);
         }
       }
+
+      // Auto-complete sessions whose end time has passed (no-show / not cancelled -> counts as done)
+      const bookingsRouter = require('../routes/booking');
+      const activeSessions = await Booking.find({ status: { $in: ['Pending', 'Confirmed'] } });
+      for (const b of activeSessions) {
+        if (!b.date || !b.startTime || typeof b.duration !== 'number') continue;
+        const start = parseBookingDateTime(b.date, b.startTime);
+        const end = new Date(start.getTime() + b.duration * 60 * 60 * 1000);
+        if (now >= end) {
+          await bookingsRouter.applyBookingStatus(b, 'Completed');
+          console.log(`✅ Session ${b._id} auto-completed (time passed).`);
+        }
+      }
     } catch (err) {
       console.log('❌ Package expiry/freeze job error:', err);
     }

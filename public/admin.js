@@ -48,11 +48,13 @@ async function switchView(view) {
   document.getElementById('customersView').style.display = view === 'customers' ? 'block' : 'none';
   document.getElementById('reportsView').style.display = view === 'reports' ? 'block' : 'none';
   document.getElementById('packagesView').style.display = view === 'packages' ? 'block' : 'none';
+  document.getElementById('frozenView').style.display = view === 'frozen' ? 'block' : 'none';
   document.getElementById('liveryView').style.display = view === 'livery' ? 'block' : 'none';
   document.getElementById('tabBookings').classList.toggle('active', view === 'bookings');
   document.getElementById('tabCustomers').classList.toggle('active', view === 'customers');
   document.getElementById('tabReports').classList.toggle('active', view === 'reports');
   document.getElementById('tabPackages').classList.toggle('active', view === 'packages');
+  document.getElementById('tabFrozen').classList.toggle('active', view === 'frozen');
   document.getElementById('tabLivery').classList.toggle('active', view === 'livery');
 
   if (view === 'customers') await loadCustomers();
@@ -65,6 +67,7 @@ async function switchView(view) {
     generateCustomerReport();
   }
   if (view === 'packages') await loadPackages();
+  if (view === 'frozen') { await loadPackages(); renderFrozen(); }
   if (view === 'livery') await loadLivery();
 }
 
@@ -324,7 +327,7 @@ function renderDailyBookings(dateStr) {
   document.getElementById('dailyDateLabel').textContent =
     d.toLocaleDateString('default', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-  const dayBookings = allBookingsCache.filter(b => b.date === dateStr);
+  const dayBookings = allBookingsCache.filter(b => b.date === dateStr && b.status !== 'Completed' && b.status !== 'Cancelled');
   const container = document.getElementById('dailyBookingsContainer');
   container.innerHTML = '';
 
@@ -823,26 +826,45 @@ async function loadPackages() {
   }
 }
 
+let packageSubTab = 'Pending';
+
+function switchPackageTab(tab) {
+  packageSubTab = tab;
+  ['Pending','Approved','Archive'].forEach(t => {
+    const btn = document.getElementById('pkgTab' + t);
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
+  renderPackages();
+}
+
 function renderPackages() {
-  const statusFilter = document.getElementById('packageStatusFilter').value;
-  const showFinished = document.getElementById('showFinishedPackages').checked;
+  // Frozen packages live in the Frozen tab, not here
+  let packages = allPackagesCache.filter(p => !p.frozen);
+  if (packageSubTab === 'Pending')       packages = packages.filter(p => p.approvalStatus === 'Pending');
+  else if (packageSubTab === 'Approved') packages = packages.filter(p => p.approvalStatus === 'Approved' && !p.finished && !p.expired);
+  else if (packageSubTab === 'Archive')  packages = packages.filter(p => p.finished || p.expired || p.approvalStatus === 'Rejected');
+  renderPackageList(packages, 'packagesContainer', 'packageCountText');
+}
 
-  let packages = [...allPackagesCache];
+function renderFrozen() {
+  const frozen = allPackagesCache.filter(p => p.frozen);
+  renderPackageList(frozen, 'frozenContainer', 'frozenCountText');
+}
 
-  if (!showFinished) packages = packages.filter(p => !p.finished);
-  if (statusFilter) packages = packages.filter(p => p.approvalStatus === statusFilter);
-
-  packages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-  const container = document.getElementById('packagesContainer');
-  document.getElementById('packageCountText').textContent = `${packages.length} package(s)`;
+function renderPackageList(packages, containerId, countId) {
+  packages = [...packages].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const container = document.getElementById(containerId);
+  const countEl = document.getElementById(countId);
+  if (countEl) countEl.textContent = `${packages.length} package(s)`;
 
   if (packages.length === 0) {
     container.innerHTML = '<p class="no-bookings-text">No packages to show.</p>';
     return;
   }
+  container.innerHTML = packages.map(p => packageCardHtml(p)).join('');
+}
 
-  container.innerHTML = packages.map(p => {
+function packageCardHtml(p) {
     const pending = p.sessionsTotal - p.sessionsCompleted;
     const percent = Math.round((p.sessionsCompleted / p.sessionsTotal) * 100);
     const approvalClass = p.approvalStatus.toLowerCase();
@@ -907,7 +929,6 @@ function renderPackages() {
         <div id="sessionsList-${p._id}" style="display:none; margin-top:12px;"></div>
       </div>
     `;
-  }).join('');
 }
 
 async function freezePackage(id) {

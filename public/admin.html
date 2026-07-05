@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin — Legacy Équestre</title>
   <link rel="stylesheet" href="admin.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 </head>
 <body>
 
@@ -33,6 +33,7 @@
       <button class="tab-btn" id="tabCustomers" onclick="switchView('customers')">👥 Customers</button>
       <button class="tab-btn" id="tabReports" onclick="switchView('reports')">📊 Reports</button>
       <button class="tab-btn" id="tabPackages" onclick="switchView('packages')">📦 Packages</button>
+      <button class="tab-btn" id="tabFrozen" onclick="switchView('frozen')">❄️ Frozen</button>
       <button class="tab-btn" id="tabLivery" onclick="switchView('livery')">🏠 Livery</button>
     </div>
 
@@ -148,19 +149,20 @@
     <!-- ===== PACKAGES VIEW ===== -->
     <div id="packagesView" style="display:none;">
       <h3 class="table-title">Package Requests</h3>
-      <div class="filter-bar">
-        <select id="packageStatusFilter" onchange="renderPackages()">
-          <option value="">All (Active)</option>
-          <option value="Pending">Pending Approval</option>
-          <option value="Approved">Approved</option>
-          <option value="Rejected">Rejected</option>
-        </select>
-        <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; color:#888;">
-          <input type="checkbox" id="showFinishedPackages" onchange="renderPackages()"> Show Finished
-        </label>
+      <div class="sub-tabs">
+        <button class="sub-tab-btn active" id="pkgTabPending" onclick="switchPackageTab('Pending')">⏳ Waiting Approval</button>
+        <button class="sub-tab-btn" id="pkgTabApproved" onclick="switchPackageTab('Approved')">✅ Approved</button>
+        <button class="sub-tab-btn" id="pkgTabArchive" onclick="switchPackageTab('Archive')">🗄️ Archive</button>
         <span class="count-text" id="packageCountText"></span>
       </div>
       <div id="packagesContainer"></div>
+    </div>
+
+    <!-- ===== FROZEN VIEW ===== -->
+    <div id="frozenView" style="display:none;">
+      <h3 class="table-title">❄️ Frozen Packages <span class="count-text" id="frozenCountText"></span></h3>
+      <p class="sub-label" style="margin-bottom:14px;">Packages here are paused (validity stopped). Click Unfreeze to return one to active bookings — its validity extends by the frozen days.</p>
+      <div id="frozenContainer"></div>
     </div>
 
     <!-- ===== LIVERY VIEW ===== -->
