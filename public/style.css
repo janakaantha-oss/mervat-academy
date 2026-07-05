@@ -522,16 +522,21 @@ h1, h2, h3, .serif {
   background: var(--cream);
   padding: 40px 0 0;
 }
-.footer-top {
+.footer-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  padding-bottom: 40px;
+  padding-bottom: 24px;
 }
+.footer-col { flex: 1; }
+.footer-left { text-align: left; }
+.footer-mid { text-align: center; }
+.footer-right { text-align: right; }
 .footer-socials {
   display: flex;
   gap: 20px;
   align-items: center;
+  justify-content: center;
 }
 .footer-socials a {
   color: var(--brown);
@@ -543,16 +548,16 @@ h1, h2, h3, .serif {
 .footer-socials a:hover { opacity: 1; }
 
 .footer-contact-label {
-  font-size: 0.72rem;
-  letter-spacing: 3px;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--olive);
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
-.footer-contact p {
-  font-size: 0.88rem;
+.footer-col p:not(.footer-contact-label) {
+  font-size: 0.85rem;
   color: var(--brown-light);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .footer-divider {
   height: 1px;
@@ -560,22 +565,13 @@ h1, h2, h3, .serif {
 }
 .footer-bottom {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 18px 0;
+  padding: 14px 0;
   font-size: 0.78rem;
   color: var(--brown-light);
+  text-align: center;
 }
-.footer-bottom-links {
-  display: flex;
-  gap: 24px;
-}
-.footer-bottom-links a {
-  color: var(--brown-light);
-  text-decoration: none;
-  font-size: 0.78rem;
-}
-.footer-bottom-links a:hover { color: var(--brown); }
 
 
 /* ===================================================================
@@ -802,21 +798,21 @@ h1, h2, h3, .serif {
   .section-heading { font-size: 1.05rem; margin-bottom: 6px; }
   .section-eyebrow { font-size: 0.5rem; letter-spacing: 1px; margin-bottom: 1px; }
 
-  /* ---- HOME SERVICES — 3-column grid, readable text ---- */
-  .services { padding: 8px 0 4px; }
-  .services-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .service-card { border-radius: 5px; display: flex; flex-direction: column; }
-  .service-card-img { height: 65px; object-fit: cover; object-position: center center; display: block; flex-shrink: 0; }
-  .service-card-body { padding: 4px 5px 5px; flex: 1; display: flex; flex-direction: column; }
-  .service-card-title { font-size: 0.6rem; margin-bottom: 3px; line-height: 1.1; font-weight: 700; font-style: normal; }
-  .service-desc { 
-    font-size: 0.38rem; line-height: 1.2; 
-    margin-bottom: 3px; text-align: left; flex-shrink: 0;
+  /* ---- HOME SERVICES — bigger, higher-quality cards ---- */
+  .services { padding: 14px 0 8px; }
+  .services-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .service-card { border-radius: 7px; display: flex; flex-direction: column; }
+  .service-card-img { height: 120px; object-fit: cover; object-position: center center; display: block; flex-shrink: 0; }
+  .service-card-body { padding: 10px 11px 12px; flex: 1; display: flex; flex-direction: column; }
+  .service-card-title { font-size: 1.05rem; margin-bottom: 5px; line-height: 1.15; font-weight: 400; font-style: italic; }
+  .service-desc {
+    font-size: 0.68rem; line-height: 1.35;
+    margin-bottom: 8px; text-align: left; flex-shrink: 0;
   }
-  .service-explore { font-size: 0.45rem; letter-spacing: 0.5px; margin-top: auto; padding-top: 2px; display: inline-block; flex-shrink: 0; }
-  .service-price-rows { margin-bottom: 3px; flex-shrink: 0; }
-  .service-price-row { padding: 2px 0; font-size: 0.45rem; }
-  .service-card .btn-book { padding: 4px; font-size: 0.42rem; letter-spacing: 0.5px; margin-top: auto; flex-shrink: 0; }
+  .service-explore { font-size: 0.6rem; letter-spacing: 1px; margin-top: auto; padding-top: 4px; display: inline-block; flex-shrink: 0; }
+  .service-price-rows { margin-bottom: 8px; flex-shrink: 0; }
+  .service-price-row { padding: 5px 0; font-size: 0.72rem; }
+  .service-card .btn-book { padding: 9px; font-size: 0.62rem; letter-spacing: 1px; margin-top: auto; flex-shrink: 0; }
 
   /* ---- PRICING ---- */
   .pricing-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
@@ -881,16 +877,18 @@ h1, h2, h3, .serif {
   .terms-list li { font-size: 0.68rem; margin-bottom: 8px; gap: 8px; }
   .terms-list li::before { width: 5px; height: 5px; margin-top: 6px; }
 
-  /* ---- FOOTER — ultra compact ---- */
-  .footer { padding: 10px 0 0; }
-  .footer-top { flex-direction: column; gap: 6px; text-align: center; padding-bottom: 8px; }
-  .footer-bottom { flex-direction: column; gap: 2px; text-align: center; padding: 6px 0; font-size: 0.56rem; }
-  .footer-bottom-links { gap: 6px; }
-  .footer-bottom-links a { font-size: 0.56rem; }
-  .footer-contact-label { margin-bottom: 4px; font-size: 0.55rem; }
-  .footer-contact p { font-size: 0.65rem; margin-bottom: 2px; }
-  .footer-socials { gap: 12px; }
-  .footer-socials a { font-size: 0.9rem; }
+  /* ---- FOOTER — compact horizontal row ---- */
+  .footer { padding: 12px 0 0; }
+  .footer-row { flex-direction: row; align-items: center; gap: 6px; padding-bottom: 10px; }
+  .footer-col { flex: 1; min-width: 0; }
+  .footer-left { text-align: left; }
+  .footer-mid { text-align: center; }
+  .footer-right { text-align: right; }
+  .footer-contact-label { margin-bottom: 3px; font-size: 0.5rem; letter-spacing: 1px; }
+  .footer-col p:not(.footer-contact-label) { font-size: 0.56rem; margin-bottom: 1px; word-break: break-word; line-height: 1.3; }
+  .footer-socials { gap: 10px; }
+  .footer-socials a { font-size: 1rem; }
+  .footer-bottom { padding: 8px 0; font-size: 0.55rem; }
 
   /* ---- WHATSAPP ---- */
   .btn-whatsapp { padding: 8px 16px; font-size: 0.6rem; border-radius: 20px; }
@@ -935,19 +933,19 @@ h1, h2, h3, .serif {
 
   .container { padding: 0 6px; }
 
-  /* Services */
+  /* Services — bigger 2-column */
   .service-card { display: flex; flex-direction: column; }
-  .services { padding: 8px 0 4px; }
+  .services { padding: 12px 0 6px; }
   .section-heading { font-size: 1.05rem; margin-bottom: 6px; }
   .section-eyebrow { font-size: 0.5rem; }
-  .services-grid { gap: 4px; }
-  .service-card-img { height: 50px; object-fit: cover; object-position: center center; display: block; flex-shrink: 0; }
-  .service-card-body { padding: 2px 3px 4px; flex: 1; display: flex; flex-direction: column; }
-  .service-card-title { font-size: 0.52rem; margin-bottom: 2px; line-height: 1.05; font-weight: 700; font-style: normal; }
-  .service-desc { font-size: 0.32rem; line-height: 1.15; text-align: left; margin-bottom: 2px; flex-shrink: 0; }
-  .service-price-row { padding: 1px 0; font-size: 0.38rem; flex-shrink: 0; }
-  .service-card .btn-book { padding: 3px; font-size: 0.38rem; margin-top: auto; flex-shrink: 0; }
-  .service-explore { margin-top: auto; padding-top: 1px; flex-shrink: 0; }
+  .services-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .service-card-img { height: 100px; object-fit: cover; object-position: center center; display: block; flex-shrink: 0; }
+  .service-card-body { padding: 8px 9px 10px; flex: 1; display: flex; flex-direction: column; }
+  .service-card-title { font-size: 0.95rem; margin-bottom: 4px; line-height: 1.1; font-weight: 400; font-style: italic; }
+  .service-desc { font-size: 0.62rem; line-height: 1.3; text-align: left; margin-bottom: 6px; flex-shrink: 0; }
+  .service-price-row { padding: 4px 0; font-size: 0.68rem; flex-shrink: 0; }
+  .service-card .btn-book { padding: 8px; font-size: 0.58rem; margin-top: auto; flex-shrink: 0; }
+  .service-explore { font-size: 0.58rem; margin-top: auto; padding-top: 3px; flex-shrink: 0; }
 
   /* Pricing single column */
   .pricing-grid { grid-template-columns: 1fr; gap: 6px; }
@@ -981,12 +979,13 @@ h1, h2, h3, .serif {
   .single-price-card .sp-amount { font-size: 1.6rem; }
 
   /* Footer */
-  .footer { padding: 6px 0 0; }
-  .footer-top { padding-bottom: 6px; gap: 3px; }
-  .footer-bottom { padding: 4px 0; font-size: 0.5rem; }
-  .footer-bottom-links { gap: 6px; }
-  .footer-bottom-links a { font-size: 0.5rem; }
-  .footer-contact p { font-size: 0.6rem; }
+  .footer { padding: 8px 0 0; }
+  .footer-row { gap: 4px; padding-bottom: 8px; }
+  .footer-contact-label { font-size: 0.45rem; margin-bottom: 2px; }
+  .footer-col p:not(.footer-contact-label) { font-size: 0.5rem; }
+  .footer-socials { gap: 8px; }
+  .footer-socials a { font-size: 0.9rem; }
+  .footer-bottom { padding: 6px 0; font-size: 0.48rem; }
 
   /* WhatsApp */
   .btn-whatsapp { padding: 6px 12px; font-size: 0.55rem; }
