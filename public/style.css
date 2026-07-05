@@ -745,13 +745,13 @@ h1, h2, h3, .serif {
 @media (max-width: 900px) {
 
   /* ---- NAVBAR ---- */
-  .navbar { padding: 0 12px; height: 52px; }
+  .navbar { padding: 0 10px; height: 50px; }
   .nav-logo-name { font-size: 0.9rem; letter-spacing: 2px; }
   .nav-logo-sub { font-size: 0.42rem; letter-spacing: 1px; }
   .nav-links { display: none; }
-  .nav-links.open {
+  .nav-links.open { top: 50px;
     display: flex; flex-direction: column;
-    position: absolute; top: 52px; left: 0; right: 0;
+    position: absolute; top: 50px; left: 0; right: 0;
     background: var(--white); border-bottom: 1px solid var(--border);
     padding: 8px 14px; gap: 0; z-index: 999;
     box-shadow: 0 10px 28px rgba(44,36,32,0.12);
@@ -766,7 +766,7 @@ h1, h2, h3, .serif {
   .btn-book-now { padding: 6px 12px; font-size: 0.58rem; letter-spacing: 1px; }
 
   /* ---- HERO — as small as possible ---- */
-  .hero { height: 22vh; min-height: 150px; margin-top: 52px; }
+  .hero { height: 22vh; min-height: 150px; margin-top: 50px; }
   .hero.hero-centered { height: 24vh; min-height: 170px; }
   .hero img { object-fit: cover; object-position: center 30%; }
   .hero-overlay { background: linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.35) 60%, rgba(0,0,0,0.5) 100%); }
@@ -792,12 +792,12 @@ h1, h2, h3, .serif {
   .section-eyebrow { font-size: 0.5rem; letter-spacing: 1px; margin-bottom: 1px; }
 
   /* ---- HOME SERVICES — 3-column grid, readable text ---- */
-  .services { padding: 10px 0 6px; }
-  .services-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .services { padding: 8px 0 4px; }
+  .services-grid { grid-template-columns: repeat(3, 1fr); gap: 5px; }
   .service-card { border-radius: 5px; }
-  .service-card-img { height: 80px; object-fit: cover; object-position: center 30%; display: block; }
-  .service-card-body { padding: 2px 3px 3px; }
-  .service-card-title { font-size: 0.62rem; margin-bottom: 0; line-height: 1.1; }
+  .service-card-img { height: 75px; object-fit: cover; object-position: center 30%; display: block; }
+  .service-card-body { padding: 3px 4px 4px; }
+  .service-card-title { font-size: 0.62rem; margin-bottom: 2px; line-height: 1.1; }
   .service-desc { 
     font-size: 0.38rem; line-height: 1.15; 
     margin-bottom: 1px; text-align: left;
@@ -871,11 +871,11 @@ h1, h2, h3, .serif {
   .terms-list li::before { width: 5px; height: 5px; margin-top: 6px; }
 
   /* ---- FOOTER — ultra compact ---- */
-  .footer { padding: 12px 0 0; }
-  .footer-top { flex-direction: column; gap: 8px; text-align: center; padding-bottom: 12px; }
-  .footer-bottom { flex-direction: column; gap: 4px; text-align: center; padding: 8px 0; font-size: 0.6rem; }
-  .footer-bottom-links { gap: 10px; }
-  .footer-bottom-links a { font-size: 0.6rem; }
+  .footer { padding: 10px 0 0; }
+  .footer-top { flex-direction: column; gap: 6px; text-align: center; padding-bottom: 8px; }
+  .footer-bottom { flex-direction: column; gap: 2px; text-align: center; padding: 6px 0; font-size: 0.56rem; }
+  .footer-bottom-links { gap: 6px; }
+  .footer-bottom-links a { font-size: 0.56rem; }
   .footer-contact-label { margin-bottom: 4px; font-size: 0.55rem; }
   .footer-contact p { font-size: 0.65rem; margin-bottom: 2px; }
   .footer-socials { gap: 12px; }
@@ -904,14 +904,14 @@ h1, h2, h3, .serif {
    =================================================================== */
 @media (max-width: 420px) {
 
-  .navbar { padding: 0 8px; height: 48px; }
+  .navbar { padding: 0 6px; height: 46px; }
   .nav-logo-name { font-size: 0.8rem; letter-spacing: 1px; }
   .btn-book-now { padding: 5px 8px; font-size: 0.52rem; }
-  .nav-links.open { top: 48px; }
+  .nav-links.open { top: 50px; top: 48px; }
   .hamburger { font-size: 1.1rem; }
 
   /* Hero — barely there, just for brand feel */
-  .hero { height: 18vh; min-height: 120px; margin-top: 48px; }
+  .hero { height: 18vh; min-height: 120px; margin-top: 46px; }
   .hero.hero-centered { height: 20vh; min-height: 140px; }
   .hero-content h1 { font-size: 1.2rem; }
   .hero-centered .hero-content h1 { font-size: 1.3rem; }
@@ -928,10 +928,10 @@ h1, h2, h3, .serif {
   .services { padding: 8px 0 4px; }
   .section-heading { font-size: 1.05rem; margin-bottom: 6px; }
   .section-eyebrow { font-size: 0.5rem; }
-  .services-grid { gap: 4px; }
-  .service-card-img { height: 62px; object-fit: cover; object-position: center 30%; display: block; }
-  .service-card-body { padding: 2px 3px 3px; }
-  .service-card-title { font-size: 0.54rem; line-height: 1.05; }
+  .services-grid { gap: 3px; }
+  .service-card-img { height: 56px; object-fit: cover; object-position: center 30%; display: block; }
+  .service-card-body { padding: 3px 4px 4px; }
+  .service-card-title { font-size: 0.54rem; margin-bottom: 1px; line-height: 1.05; }
   .service-desc { font-size: 0.32rem; line-height: 1.1; text-align: left; margin: 0; }
   .service-price-row { padding: 0; font-size: 0.38rem; }
   .service-card .btn-book { padding: 2px; font-size: 0.36rem; }
@@ -968,11 +968,11 @@ h1, h2, h3, .serif {
   .single-price-card .sp-amount { font-size: 1.6rem; }
 
   /* Footer */
-  .footer { padding: 8px 0 0; }
-  .footer-top { padding-bottom: 8px; gap: 4px; }
-  .footer-bottom { padding: 6px 0; font-size: 0.55rem; }
-  .footer-bottom-links { gap: 8px; }
-  .footer-bottom-links a { font-size: 0.55rem; }
+  .footer { padding: 6px 0 0; }
+  .footer-top { padding-bottom: 6px; gap: 3px; }
+  .footer-bottom { padding: 4px 0; font-size: 0.5rem; }
+  .footer-bottom-links { gap: 6px; }
+  .footer-bottom-links a { font-size: 0.5rem; }
   .footer-contact p { font-size: 0.6rem; }
 
   /* WhatsApp */
