@@ -1123,3 +1123,88 @@ html { scroll-behavior: smooth; }
   .hero-content { animation: none; }
   * { scroll-behavior: auto; }
 }
+
+/* ===================================================================
+   UI/UX POLISH v3 — premium finishing touches (client-ready)
+   =================================================================== */
+
+/* Decorative flanking lines on section eyebrows */
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-eyebrow::before,
+.section-eyebrow::after {
+  content: '';
+  width: 26px; height: 1px;
+  background: var(--olive);
+  opacity: 0.55;
+}
+
+/* Buttons: elegant sliding-fill on hover */
+.btn-book, .btn-submit, .service-card .btn-book, .btn-book-now {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+.btn-book::before, .btn-submit::before, .service-card .btn-book::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--olive);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+  z-index: -1;
+}
+.btn-book:hover::before, .btn-submit:hover::before, .service-card .btn-book:hover::before {
+  transform: scaleX(1);
+}
+
+/* Best-value pricing card: soft olive glow + accent border */
+.pricing-card.best-value {
+  border: 1.5px solid var(--olive);
+  box-shadow: 0 10px 34px rgba(107,122,90,0.18);
+}
+
+/* Service card image: subtle gradient veil for depth */
+.service-card { position: relative; }
+.service-card-img { position: relative; }
+.service-card-body { position: relative; z-index: 1; background: var(--white); }
+
+/* Refined heading rhythm */
+.section-heading, .pkg-pricing h2, .pkg-description h2, .section-title {
+  letter-spacing: 0.3px;
+}
+
+/* Pricing amount: gentle emphasis */
+.pricing-amount { transition: color 0.25s ease; }
+.pricing-card:hover .pricing-amount { color: var(--olive); }
+
+/* Back-to-top floating button (injected by JS) */
+#backToTop {
+  position: fixed;
+  bottom: 22px; right: 22px;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--brown);
+  color: var(--cream);
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+  z-index: 900;
+  box-shadow: 0 6px 20px rgba(44,36,32,0.28);
+}
+#backToTop.show { opacity: 1; visibility: visible; transform: translateY(0); }
+#backToTop:hover { background: var(--olive); }
+@media (max-width: 700px) {
+  #backToTop { width: 40px; height: 40px; bottom: 16px; right: 16px; font-size: 1rem; }
+}
+
+/* Link hover micro-interaction on footer + explore */
+.footer-socials a { transition: transform 0.2s ease, opacity 0.2s ease; }
+.footer-socials a:hover { transform: translateY(-2px); }

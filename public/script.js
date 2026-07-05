@@ -553,3 +553,30 @@ document.querySelectorAll('.service-card, .pricing-card, .single-price-card, .st
   el.classList.add('reveal-up');
   revealObserver.observe(el);
 });
+
+// ===== Back-to-top floating button =====
+(function () {
+  const btn = document.createElement('button');
+  btn.id = 'backToTop';
+  btn.setAttribute('aria-label', 'Back to top');
+  btn.innerHTML = '↑';
+  document.body.appendChild(btn);
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('show', window.scrollY > 400);
+  }, { passive: true });
+})();
+
+// ===== Reveal section headings on scroll =====
+(function () {
+  const headingObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        headingObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.section-heading, .pkg-pricing h2, .pkg-description h2, .section-title, .about-grid h2')
+    .forEach(el => { el.classList.add('reveal-up'); headingObserver.observe(el); });
+})();
