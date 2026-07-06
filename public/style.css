@@ -1413,32 +1413,35 @@ body { min-height: auto; display: block; }
 
 /* Compact the homepage so hero + 6 cards + footer fit one mobile screen */
 @media (max-width: 900px) {
-  .hero { height: 26vh !important; min-height: 170px !important; }
+  .hero { height: 24vh !important; min-height: 160px !important; }
   .hero-content h1 { font-size: 1.7rem !important; }
   .hero-centered .hero-content h1 { font-size: 1.9rem !important; }
   .hero-content p { font-size: 0.72rem !important; line-height: 1.4 !important; }
 
-  .services { padding: 12px 0 10px !important; }
-  .section-heading { font-size: 1.4rem !important; margin-bottom: 10px !important; }
-  .services-grid { gap: 8px !important; row-gap: 9px !important; }
-  .service-card-img { height: 78px !important; }
-  .service-card-body { padding: 7px 8px 9px !important; gap: 4px !important; }
+  .services { padding: 14px 0 12px !important; }
+  .section-heading { font-size: 1.5rem !important; margin-bottom: 12px !important; }
+  .services-grid { gap: 9px !important; row-gap: 11px !important; }
+  .service-card-img { height: 100px !important; }
+  .service-card-body { padding: 9px 10px 11px !important; gap: 5px !important; }
+  .service-card-title { font-size: 0.98rem !important; line-height: 1.15 !important; margin-bottom: 3px !important; }
+  .service-explore { font-size: 0.62rem !important; }
 
   .footer { padding: 10px 0 0 !important; }
   .footer-row { padding-bottom: 8px !important; }
   .footer-bottom { padding: 5px 0 !important; font-size: 0.4rem !important; }
 }
 @media (max-width: 420px) {
-  .hero { height: 22vh !important; min-height: 150px !important; }
+  .hero { height: 20vh !important; min-height: 140px !important; }
   .hero-content h1 { font-size: 1.4rem !important; }
-  .services-grid { gap: 6px !important; row-gap: 7px !important; }
-  .service-card-img { height: 66px !important; }
+  .services-grid { gap: 7px !important; row-gap: 8px !important; }
+  .service-card-img { height: 86px !important; }
+  .service-card-title { font-size: 0.88rem !important; }
 }
 
 /* Card spacing on desktop stays comfortable */
 .services-grid { gap: 16px; }
 
-/* Hero buttons — small & tidy */
+/* Hero buttons — small compact boxes (sized to text, NOT stretched) */
 .hero-btn {
   display: inline-block;
   padding: 11px 22px;
@@ -1447,14 +1450,14 @@ body { min-height: auto; display: block; }
   text-decoration: none;
 }
 @media (max-width: 900px) {
-  .hero-ctas { gap: 7px !important; margin-top: 12px !important; justify-content: center; flex-wrap: nowrap; }
+  .hero-ctas { gap: 10px !important; margin-top: 14px !important; justify-content: center; flex-wrap: nowrap; }
   .hero-btn {
-    padding: 7px 10px !important;
-    font-size: 0.5rem !important;
+    padding: 8px 14px !important;
+    font-size: 0.52rem !important;
     letter-spacing: 0.6px !important;
-    flex: 1 1 0; text-align: center; white-space: nowrap;
+    flex: 0 0 auto; text-align: center; white-space: nowrap;
   }
 }
 @media (max-width: 420px) {
-  .hero-btn { padding: 6px 8px !important; font-size: 0.44rem !important; letter-spacing: 0.3px !important; }
+  .hero-btn { padding: 7px 11px !important; font-size: 0.46rem !important; letter-spacing: 0.3px !important; }
 }
