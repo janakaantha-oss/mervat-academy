@@ -1327,3 +1327,41 @@ html { scroll-behavior: smooth; }
 /* Link hover micro-interaction on footer + explore */
 .footer-socials a { transition: transform 0.2s ease, opacity 0.2s ease; }
 .footer-socials a:hover { transform: translateY(-2px); }
+
+/* ===================================================================
+   CLIENT REQUESTS — hide service descriptions + smaller footer
+   =================================================================== */
+
+/* 1) Service cards: image + title only (description hidden, structure kept) */
+.service-desc { display: none !important; }
+.service-card-body {
+  padding: 14px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.service-card-title { margin-bottom: 0 !important; }
+@media (max-width: 900px) {
+  .service-card-body { padding: 9px 9px 11px; gap: 5px; }
+}
+@media (max-width: 420px) {
+  .service-card-body { padding: 7px 7px 9px; gap: 4px; }
+}
+
+/* 2) Smaller footer */
+.footer { padding: 22px 0 0 !important; }
+.footer-row { padding-bottom: 14px !important; }
+.footer-contact-label { font-size: 0.6rem !important; margin-bottom: 4px !important; }
+.footer-col p:not(.footer-contact-label) { font-size: 0.72rem !important; margin-bottom: 2px !important; }
+.footer-socials { gap: 14px !important; }
+.footer-socials a { font-size: 0.95rem !important; }
+.footer-bottom { padding: 9px 0 !important; font-size: 0.66rem !important; }
+@media (max-width: 900px) {
+  .footer { padding: 12px 0 0 !important; }
+  .footer-row { padding-bottom: 8px !important; gap: 5px !important; }
+  .footer-contact-label { font-size: 0.46rem !important; margin-bottom: 2px !important; }
+  .footer-col p:not(.footer-contact-label) { font-size: 0.5rem !important; }
+  .footer-socials { gap: 9px !important; }
+  .footer-socials a { font-size: 0.85rem !important; }
+  .footer-bottom { padding: 6px 0 !important; font-size: 0.46rem !important; }
+}

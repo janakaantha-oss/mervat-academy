@@ -25,7 +25,7 @@ const liveryBookingSchema = new mongoose.Schema({
   // AwaitingHorse: admin approved the request, but the 30-day clock hasn't started — waiting for horse to physically arrive.
   // Active: horse confirmed received, the 30-day period is running.
   // Rejected: request declined.
-  approvalStatus: { type: String, enum: ['Pending', 'AwaitingHorse', 'Active', 'Rejected'], default: 'Pending' },
+  approvalStatus: { type: String, enum: ['Pending', 'AwaitingHorse', 'Active', 'Rejected', 'Expired'], default: 'Pending' },
   paymentStatus:  { type: String, enum: ['Unpaid', 'Paid'], default: 'Unpaid' },
 
   // Set once admin confirms the horse has arrived — defines the current 1-month period

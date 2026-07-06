@@ -85,6 +85,41 @@ function startReminderJob() {
           console.log(`✅ Livery renewal reminder sent (customer + admin) for booking ${booking._id}`);
         }
       }
+
+      // Auto-expire liveries whose month has ended (frees the slot, notifies both parties)
+      const expiredLiveries = await LiveryBooking.find({
+        active: true,
+        approvalStatus: 'Active',
+        endDate: { $lt: now }
+      });
+      for (const booking of expiredLiveries) {
+        booking.approvalStatus = 'Expired';
+        booking.active = false; // frees the slot in the dashboard
+        await booking.save();
+        const trackingUrl = `${process.env.PUBLIC_BASE_URL || ''}/livery-track.html?token=${booking.token}`;
+        const bodyText = `Your livery month for <strong>${booking.horseName}</strong> has ended. Thank you! To continue, please contact us to start a new period.`;
+        notifyAll({
+          customer: { name: booking.name, email: booking.email, phone: booking.phone },
+          subject: '🐴 Legacy Équestre — Livery Period Ended',
+          emailHtml: buildLiveryStatusEmailHtml({
+            name: booking.name, horseName: booking.horseName,
+            statusBadge: { bg: '#efe9db', color: '#6b6560', text: '⌛ Livery Ended' },
+            bodyText, trackingUrl, ctaLabel: null
+          }),
+          waText: buildLiveryStatusWhatsAppText({ name: booking.name, horseName: booking.horseName, statusLine: 'Your livery month has ended ⌛', bodyText: bodyText.replace(/<[^>]+>/g,''), trackingUrl }),
+          adminInfo: {
+            subject: '🔔 Livery Ended — Slot Freed',
+            headline: 'Livery Period Ended',
+            rows: [
+              ['Customer', booking.name],
+              ['Phone', booking.phone],
+              ['Horse', booking.horseName],
+              ['Slot', `#${booking.slotNumber} (now free)`]
+            ]
+          }
+        });
+        console.log(`⌛ Livery ${booking._id} auto-expired, slot ${booking.slotNumber} freed.`);
+      }
     } catch (err) {
       console.log('❌ Livery reminder job error:', err);
     }

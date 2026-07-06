@@ -73,6 +73,7 @@
       if (booking.approvalStatus === 'AwaitingHorse') { statusBannerClass = 'pending-banner'; statusText = '✅ Approved — Awaiting Horse Arrival'; }
       if (booking.approvalStatus === 'Active') { statusBannerClass = 'approved-banner'; statusText = '✅ Active'; }
       if (booking.approvalStatus === 'Rejected') { statusBannerClass = 'rejected-banner'; statusText = '❌ Not Approved'; }
+      if (booking.approvalStatus === 'Expired') { statusBannerClass = 'rejected-banner'; statusText = '⌛ Livery Period Ended'; }
 
       let html = `
         <h2>Full Livery</h2>
@@ -102,6 +103,11 @@
         html += `<p style="color:#888; font-size:0.9rem; margin-top:10px;">Please contact us directly for more information.</p>`;
       }
 
+      if (booking.approvalStatus === 'Expired') {
+        html += `<p style="color:#555; margin-bottom:6px;">📅 Ended: ${booking.endDate ? new Date(booking.endDate).toLocaleDateString() : '-'}</p>`;
+        html += `<p style="color:#888; font-size:0.9rem; margin-top:10px;">Your livery month has ended. To continue with ${escapeHtml(booking.horseName)}, please contact us to start a new period.</p>`;
+      }
+
       card.innerHTML = html;
 
       if (booking.approvalStatus === 'Active' && booking.dailyLog && booking.dailyLog.length) {
@@ -109,8 +115,14 @@
         window._dailyLog = booking.dailyLog; // cache for popup lookup
         document.getElementById('dayLogGrid').innerHTML = booking.dailyLog.map(d => {
           const dateLabel = d.date ? formatDayLabel(d.date) : `Day ${d.dayNumber}`;
+          const todayIso = new Date().toISOString().slice(0,10);
+          const isToday = d.date === todayIso;
+          const isPast = d.date && d.date < todayIso;
+          const borderColor = isToday ? '#6b7a5a' : (d.note ? '#9fd8ab' : '#eee');
+          const bgColor = isToday ? '#eef2e8' : (d.note ? '#f4fbf5' : (isPast ? '#f2efe8' : '#fafafa'));
           return `
-          <div onclick="openDayDetail(${d.dayNumber})" style="cursor:pointer; border:1px solid ${d.note ? '#9fd8ab' : '#eee'}; background:${d.note ? '#f4fbf5' : '#fafafa'}; border-radius:8px; padding:10px 6px; font-size:0.78rem; text-align:center; transition: box-shadow 0.2s;">
+          <div onclick="openDayDetail(${d.dayNumber})" style="cursor:pointer; border:${isToday ? '2px' : '1px'} solid ${borderColor}; background:${bgColor}; opacity:${isPast && !d.note ? '0.6' : '1'}; border-radius:8px; padding:10px 6px; font-size:0.78rem; text-align:center; transition: box-shadow 0.2s;">
+            ${isToday ? '<span style="display:block; font-size:0.58rem; color:#6b7a5a; font-weight:700; letter-spacing:1px;">TODAY</span>' : ''}
             <strong style="display:block; color:#2c1a0e;">${dateLabel}</strong>
             <span style="color:#999; font-size:0.68rem;">Day ${d.dayNumber}</span>
             ${d.note ? '<div style="margin-top:3px; color:#1e7e34; font-size:0.68rem;">✓ Logged</div>' : '<div style="margin-top:3px; color:#bbb; font-size:0.68rem;">No entry</div>'}
