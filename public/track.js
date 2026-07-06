@@ -92,6 +92,24 @@ function renderPackage() {
     <p class="package-name">${escapeHtml(pkg.packageType)} — ${escapeHtml(pkg.tierLabel)}</p>
     ${approvalBadge}
 
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" viewBox="0 0 120 120">
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#8a9b74"></stop>
+            <stop offset="100%" stop-color="#5c6b47"></stop>
+          </linearGradient>
+        </defs>
+        <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+        <circle class="ring-fill" cx="60" cy="60" r="52"
+          style="stroke-dasharray:${2*Math.PI*52}; stroke-dashoffset:${(2*Math.PI*52)*(1 - (pkg.sessionsTotal ? pkg.sessionsCompleted/pkg.sessionsTotal : 0))}"></circle>
+      </svg>
+      <div class="ring-center">
+        <span class="ring-num">${pkg.sessionsCompleted}<span class="ring-total">/${pkg.sessionsTotal}</span></span>
+        <span class="ring-label">Sessions Done</span>
+      </div>
+    </div>
+
     <div class="progress-stats">
       <div class="progress-stat">
         <span class="progress-num">${pkg.sessionsCompleted}</span>
@@ -99,16 +117,12 @@ function renderPackage() {
       </div>
       <div class="progress-stat">
         <span class="progress-num">${pending}</span>
-        <span class="progress-label">Pending</span>
+        <span class="progress-label">Remaining</span>
       </div>
       <div class="progress-stat">
         <span class="progress-num">${pkg.sessionsTotal}</span>
         <span class="progress-label">Total</span>
       </div>
-    </div>
-
-    <div class="progress-bar-track">
-      <div class="progress-bar-fill" style="width:${(pkg.sessionsCompleted / pkg.sessionsTotal * 100)}%"></div>
     </div>
 
     <p class="package-detail-line">💰 Price: AED ${pkg.price} • Payment: ${pkg.paymentStatus} (${pkg.paymentMethod})</p>

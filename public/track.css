@@ -269,3 +269,134 @@ body::after {
   .track-card, .track-brand, .status-banner, .track-container { animation: none; }
   .progress-bar-fill::after { animation: none; }
 }
+
+/* ===================================================================
+   PREMIUM UPGRADE — circular progress ring + refined stats
+   =================================================================== */
+
+/* Circular progress ring */
+.progress-ring-wrap {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin: 8px auto 22px;
+}
+.progress-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.progress-ring .ring-track {
+  fill: none;
+  stroke: #e5ddcf;
+  stroke-width: 9;
+}
+.progress-ring .ring-fill {
+  fill: none;
+  stroke: url(#ringGrad);
+  stroke-width: 9;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.1s cubic-bezier(0.22,1,0.36,1);
+  animation: ringDraw 1.4s ease-out;
+}
+@keyframes ringDraw {
+  from { stroke-dashoffset: 327; }
+}
+.ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.ring-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.6rem;
+  font-weight: 600;
+  color: #2c2420;
+  line-height: 1;
+}
+.ring-total {
+  font-size: 1.3rem;
+  color: #9a938c;
+  font-weight: 400;
+}
+.ring-label {
+  font-size: 0.62rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #6b7a5a;
+  margin-top: 6px;
+}
+
+/* Refined stat pills */
+.progress-stats {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+.progress-stat {
+  flex: 1;
+  background: #f5f2e8;
+  border: 1px solid #ece4d6;
+  border-radius: 12px;
+  padding: 14px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.progress-stat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(44,36,32,0.1);
+}
+.progress-stat .progress-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: #6b7a5a;
+  line-height: 1;
+}
+.progress-stat .progress-label {
+  font-size: 0.58rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #9a938c;
+}
+
+/* Package name refinement */
+.package-name {
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-size: 0.72rem;
+  color: #6b7a5a;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* Card heading refinement */
+.track-card h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.track-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  letter-spacing: 0.3px;
+}
+
+/* Detail lines as subtle info chips */
+.package-detail-line {
+  background: #faf8f2;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: #6b6560;
+  margin-bottom: 8px;
+  text-align: left;
+}
