@@ -12,6 +12,7 @@ const { notifyAll, actionUrl, ADMIN_ACTION_KEY } = require('../utils/notifier');
 const { actionPage, confirmPage } = require('../utils/actionPage');
 
 function timeToMinutes(timeStr) {
+  if (!timeStr) return 0;
   const [time, period] = timeStr.split(' ');
   let [hours, minutes] = time.split(':').map(Number);
   if (period === 'PM' && hours !== 12) hours += 12;
@@ -39,34 +40,37 @@ router.get('/availability', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { date, startTime, duration } = req.body;
+    const isDateOnly = !startTime || !duration; // e.g. Horse Training: date only
 
     const closedInfo = await ClosedDay.findOne({ date });
     if (closedInfo?.type === 'Holiday') {
       return res.status(409).json({ message: '❌ The academy is closed on this date.' });
     }
 
-    const newStart = timeToMinutes(startTime);
-    const newEnd = newStart + duration * 60;
+    if (!isDateOnly) {
+      const newStart = timeToMinutes(startTime);
+      const newEnd = newStart + duration * 60;
 
-    if (closedInfo?.type === 'HalfDay' && closedInfo.closeTime) {
-      const closeMinutes = timeToMinutes(closedInfo.closeTime);
-      if (newEnd > closeMinutes) {
-        return res.status(409).json({ message: `❌ The academy closes early (${closedInfo.closeTime}) on this date.` });
+      if (closedInfo?.type === 'HalfDay' && closedInfo.closeTime) {
+        const closeMinutes = timeToMinutes(closedInfo.closeTime);
+        if (newEnd > closeMinutes) {
+          return res.status(409).json({ message: `❌ The academy closes early (${closedInfo.closeTime}) on this date.` });
+        }
       }
-    }
 
-    const sameDayBookings = await Booking.find({ date });
-    const conflict = sameDayBookings.find(b => {
-      if (!b.startTime || typeof b.duration !== 'number') return false;
-      const bStart = timeToMinutes(b.startTime);
-      const bEnd = bStart + b.duration * 60;
-      return newStart < bEnd && bStart < newEnd;
-    });
-
-    if (conflict) {
-      return res.status(409).json({
-        message: `❌ That time overlaps with an existing booking at ${conflict.startTime}. Please choose another time.`
+      const sameDayBookings = await Booking.find({ date });
+      const conflict = sameDayBookings.find(b => {
+        if (!b.startTime || typeof b.duration !== 'number' || !b.duration) return false;
+        const bStart = timeToMinutes(b.startTime);
+        const bEnd = bStart + b.duration * 60;
+        return newStart < bEnd && bStart < newEnd;
       });
+
+      if (conflict) {
+        return res.status(409).json({
+          message: `❌ That time overlaps with an existing booking at ${conflict.startTime}. Please choose another time.`
+        });
+      }
     }
 
     const booking = new Booking(req.body);
