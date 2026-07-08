@@ -57,8 +57,12 @@ const TRAINING_PACKAGES = {
       { label: "10 Sessions Package", price: 3000, sessions: 10, duration: 45, validity: "Valid for 2 months", freeze: "Freeze up to 2 weeks" }
     ]
   },
-  // Keep old key for backward compatibility with existing bookings
-  _get JUMPING() { return TRAINING_PACKAGES["Private Jumping Lessons"]; },
+  "Jumping Lessons": {
+    tiers: [
+      { label: "Single Session", price: 300, sessions: 1, duration: 45, validity: "-", freeze: "-" },
+      { label: "10 Sessions Package", price: 3000, sessions: 10, duration: 45, validity: "Valid for 2 months", freeze: "Freeze up to 2 weeks" }
+    ]
+  },
   "Special Needs Lessons": {
     tiers: [
       { label: "Single Session", price: 100, sessions: 1, duration: 20, validity: "-", freeze: "-" },
@@ -71,11 +75,6 @@ const TRAINING_PACKAGES = {
     ]
   }
 };
-
-// Backward compatibility: map old "Jumping Lessons" to "Private Jumping Lessons"
-if (TRAINING_PACKAGES["Private Jumping Lessons"]) {
-  TRAINING_PACKAGES["Jumping Lessons"] = TRAINING_PACKAGES["Private Jumping Lessons"];
-}
 
 function showSubPackage() {
   const category = document.getElementById('category').value;
@@ -561,8 +560,7 @@ document.querySelectorAll('.reveal-card').forEach(card => cardObserver.observe(c
     document.body.classList.toggle('rtl', lang === 'ar');
 
     // Toggle visibility classes
-    document.querySelectorAll('.lang-en').forEach(el => { if (lang === 'en') el.style.removeProperty('display'); else el.style.display = 'none'; });
-    document.querySelectorAll('.lang-ar').forEach(el => { if (lang === 'ar') el.style.removeProperty('display'); else el.style.display = 'none'; });
+    // CSS handles visibility — no JS display manipulation needed
     // Swap alt, placeholder, aria-label attributes
     document.querySelectorAll('[data-alt-ar]').forEach(el => {
       el.setAttribute('alt', lang === 'ar' ? el.getAttribute('data-alt-ar') : el.getAttribute('alt').replace(el.getAttribute('data-alt-ar'), ''));
@@ -593,8 +591,7 @@ document.querySelectorAll('.reveal-card').forEach(card => cardObserver.observe(c
     // Update button text
     const enSpan = langBtn.querySelector('.lang-btn-en');
     const arSpan = langBtn.querySelector('.lang-btn-ar');
-    if (enSpan) enSpan.style.display = lang === 'en' ? 'none' : '';
-    if (arSpan) arSpan.style.display = lang === 'ar' ? 'none' : '';
+    // CSS handles button visibility — no JS needed
 
     // Update title
     document.title = lang === 'ar' 
