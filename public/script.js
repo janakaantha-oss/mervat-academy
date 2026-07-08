@@ -35,46 +35,53 @@ function presetCategory(value) {
 const TRAINING_PACKAGES = {
   "Private Lessons": {
     tiers: [
-      { label: "Single Session", price: 250, sessions: 1, duration: 45, validity: "-", freeze: "-" },
-      { label: "10 Sessions Package", price: 2500, sessions: 10, duration: 45, validity: "Valid for 2 months", freeze: "Freeze up to 2 weeks" }
+      { label: "Single Session", price: 200, sessions: 1, duration: 45, validity: "-", freeze: "-" },
+      { label: "10 Sessions Package", price: 1500, sessions: 10, duration: 45, validity: "Valid for 2 months", freeze: "Freeze up to 2 weeks" }
     ]
   },
   "Group Lessons": {
     tiers: [
-      { label: "Single Session", price: 170, sessions: 1, duration: 45, validity: "-", freeze: "-" },
-      { label: "10 Sessions Package", price: 1700, sessions: 10, duration: 45, validity: "Valid for 2 months", freeze: "Freeze up to 2 weeks" }
+      { label: "Single Session", price: 80, sessions: 1, duration: 45, validity: "-", freeze: "-" },
+      { label: "10 Sessions Package", price: 800, sessions: 10, duration: 45, validity: "Valid for 2 months", freeze: "Freeze up to 2 weeks" }
     ]
   },
   "Outdoor Lessons": {
     tiers: [
-      { label: "1 Private Session", price: 200, sessions: 1, duration: 45, validity: "-", freeze: "-" },
-      { label: "1 Group Session", price: 100, sessions: 1, duration: 45, validity: "-", freeze: "-" }
+      { label: "1 Private Session", price: 150, sessions: 1, duration: 45, validity: "-", freeze: "-" },
+      { label: "1 Group Session", price: 90, sessions: 1, duration: 45, validity: "-", freeze: "-" }
     ]
   },
   "Private Jumping Lessons": {
     tiers: [
       { label: "Single Session", price: 300, sessions: 1, duration: 45, validity: "-", freeze: "-" },
-      { label: "10 Sessions Package", price: 3000, sessions: 10, duration: 45, validity: "Valid for 2 months", freeze: "Freeze up to 2 weeks" }
+      { label: "10 Sessions Package", price: 2500, sessions: 10, duration: 45, validity: "Valid for 2 months", freeze: "Freeze up to 2 weeks" }
     ]
   },
   "Jumping Lessons": {
     tiers: [
       { label: "Single Session", price: 300, sessions: 1, duration: 45, validity: "-", freeze: "-" },
-      { label: "10 Sessions Package", price: 3000, sessions: 10, duration: 45, validity: "Valid for 2 months", freeze: "Freeze up to 2 weeks" }
+      { label: "10 Sessions Package", price: 2500, sessions: 10, duration: 45, validity: "Valid for 2 months", freeze: "Freeze up to 2 weeks" }
     ]
   },
   "Special Needs Lessons": {
     tiers: [
-      { label: "Single Session", price: 100, sessions: 1, duration: 20, validity: "-", freeze: "-" },
-      { label: "10 Sessions Package", price: 400, sessions: 10, duration: 20, validity: "Valid for 2 months", freeze: "Freeze up to 2 weeks" }
+      { label: "Single Session", price: 70, sessions: 1, duration: 30, validity: "-", freeze: "-" },
+      { label: "5 Sessions Package", price: 250, sessions: 5, duration: 30, validity: "Valid for 2 months", freeze: "Freeze up to 2 weeks" }
     ]
   },
   "Hand Ride": {
     tiers: [
-      { label: "Single Session", price: 50, sessions: 1, duration: 20, validity: "-", freeze: "-" }
+      { label: "Single Session", price: 30, sessions: 1, duration: 20, validity: "-", freeze: "-" }
     ]
   }
 };
+
+// Backward compatibility
+if (TRAINING_PACKAGES["Private Jumping Lessons"]) {
+  // Old "Jumping Lessons" alias already set above
+}
+
+
 
 function showSubPackage() {
   const category = document.getElementById('category').value;
