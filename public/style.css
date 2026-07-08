@@ -1036,10 +1036,16 @@ html[dir="rtl"] .nav-logo {
 /* ===================================================================
    LANGUAGE VISIBILITY — CSS fallback (works even without JS)
    =================================================================== */
-.lang-ar, .lang-btn-ar { display: none; }
-html[dir="rtl"] .lang-en, html[dir="rtl"] .lang-btn-en { display: none; }
-html[dir="rtl"] .lang-ar, html[dir="rtl"] .lang-btn-ar { display: inline; }
-html[dir="rtl"] .lang-ar.block, html[dir="rtl"] .lang-btn-ar.block { display: block; }
+/* Content: Arabic hidden by default, shown in RTL */
+.lang-ar { display: none; }
+html[dir="rtl"] .lang-en { display: none; }
+html[dir="rtl"] .lang-ar { display: inline; }
+html[dir="rtl"] .lang-ar.block { display: block; }
+
+/* Button: always show the OPPOSITE language */
+.lang-btn-en { display: none; }
+html[dir="rtl"] .lang-btn-ar { display: none; }
+html[dir="rtl"] .lang-btn-en { display: inline; }
 
 /* Language toggle button */
 .lang-toggle {
