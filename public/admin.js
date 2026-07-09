@@ -153,6 +153,7 @@ async function loadBookings() {
     renderDayControls(selectedDay);
     renderDailyBookings(selectedDay);
     renderTable();
+    updateTabBadges();
   } catch (err) {
     alert('Could not load bookings. Is the server running?');
   }
@@ -852,6 +853,7 @@ async function loadPackages() {
     allPackagesCache = await res.json();
     renderPackages();
     renderFrozen();
+    updateTabBadges();
   } catch (err) {
     alert('Could not load packages.');
   }
@@ -1115,6 +1117,7 @@ async function loadLivery() {
     const res = await fetch('/api/livery');
     allLiveryCache = await res.json();
     renderLiverySlots();
+    updateTabBadges();
   } catch (err) {
     alert('Could not load livery bookings.');
   }
@@ -1425,4 +1428,48 @@ async function saveDayNote(bookingId, dayNumber) {
   } catch (err) {
     alert('Could not save day note.');
   }
+}
+
+// ===== TAB NOTIFICATION BADGES =====
+// Shows red count on tabs where new requests wait. Clears when handled.
+function setTabBadge(tabId, count) {
+  const tab = document.getElementById(tabId);
+  if (!tab) return;
+  let badge = tab.querySelector('.tab-badge');
+  if (count > 0) {
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'tab-badge';
+      tab.appendChild(badge);
+    }
+    badge.textContent = count > 9 ? '9+' : count;
+  } else if (badge) {
+    badge.remove();
+  }
+}
+
+function updateTabBadges() {
+  // Bookings: Pending status + Pending cancellation requests
+  const bookingCount = allBookingsCache.filter(b =>
+    b.status === 'Pending' || b.cancellationStatus === 'Pending'
+  ).length;
+  setTabBadge('tabBookings', bookingCount);
+
+  // Packages: awaiting approval
+  const pkgCount = (allPackagesCache || []).filter(p =>
+    p.approvalStatus === 'Pending'
+  ).length;
+  setTabBadge('tabPackages', pkgCount);
+
+  // Frozen: freeze REQUESTS (not yet frozen)
+  const freezeCount = (allPackagesCache || []).filter(p =>
+    p.freezeRequested && !p.frozen
+  ).length;
+  setTabBadge('tabFrozen', freezeCount);
+
+  // Livery: pending approval
+  const liveryCount = (allLiveryCache || []).filter(l =>
+    l.approvalStatus === 'Pending'
+  ).length;
+  setTabBadge('tabLivery', liveryCount);
 }
